@@ -53,6 +53,8 @@ bootstrap_once() {
 
 mkdir -p .docker
 
+php artisan storage:link --force --no-interaction 2>/dev/null || true
+
 if [ ! -f ".docker/bootstrapped" ]; then
     bootstrap_once
 fi

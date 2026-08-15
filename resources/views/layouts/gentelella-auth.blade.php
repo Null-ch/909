@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') | {{ config('app.name') }}</title>
+    <title>@yield('title', 'Вход') | {{ config('app.name') }}</title>
 
     <link rel="icon" href="{{ asset('vendor/gentelella/images/favicon.svg') }}" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,26 +22,9 @@
         })();
     </script>
 
-    @vite(['resources/js/admin.js'])
+    @vite(['resources/js/admin-auth.js'])
 </head>
-<body
-    data-shell="admin"
-    data-page="@yield('page', 'dashboard')"
-    data-breadcrumb="@yield('breadcrumb', 'Главная')"
->
-    @include('layouts.partials.admin-sidebar')
-
-    <main class="main">
-        @include('layouts.partials.admin-topbar')
-
-        <div class="page-wrapper">
-            @include('layouts.partials.admin-alerts')
-            @yield('content')
-        </div>
-
-        @include('layouts.partials.admin-footer')
-    </main>
-
-    @stack('scripts')
+<body>
+    @yield('content')
 </body>
 </html>

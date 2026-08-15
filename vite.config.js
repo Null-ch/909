@@ -10,6 +10,11 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/admin.js',
+                'resources/js/admin-auth.js',
+                'resources/js/admin-categories-index.js',
+                'resources/js/admin-categories-form.js',
+                'resources/js/admin-products-index.js',
+                'resources/js/admin-products-form.js',
             ],
             refresh: true,
             fonts: [
