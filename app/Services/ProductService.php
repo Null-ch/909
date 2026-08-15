@@ -16,6 +16,8 @@ class ProductService
 {
     public function __construct(
         private readonly ImageService $imageService,
+        private readonly HomeService $homeService,
+        private readonly CatalogService $catalogService,
     ) {}
 
     /**
@@ -108,6 +110,11 @@ class ProductService
             $this->storeImages($product, $images, $mainImageIndex);
             $this->syncAttributes($product, $attributes);
 
+            logActivity('created', 'Product', $product->id, "Создан товар «{$product->name}»");
+
+            $this->homeService->clearCache();
+            $this->catalogService->clearCache();
+
             return $product->load(['categories', 'images', 'attributes']);
         });
     }
@@ -144,6 +151,11 @@ class ProductService
             $this->setMainImage($product, $mainImageId);
             $this->syncAttributes($product, $attributes);
 
+            logActivity('updated', 'Product', $product->id, "Обновлён товар «{$product->name}»");
+
+            $this->homeService->clearCache();
+            $this->catalogService->clearCache();
+
             return $product->refresh()->load(['categories', 'images', 'attributes']);
         });
     }
@@ -155,6 +167,11 @@ class ProductService
     {
         if ($this->hasActiveOrders($product)) {
             $product->update(['is_active' => false]);
+
+            logActivity('updated', 'Product', $product->id, "Товар «{$product->name}» деактивирован (есть активные заказы)");
+
+            $this->homeService->clearCache();
+            $this->catalogService->clearCache();
 
             return [
                 'deleted' => false,
@@ -173,6 +190,11 @@ class ProductService
             $product->categories()->detach();
             $product->delete();
         });
+
+        logActivity('deleted', 'Product', $product->id, "Удалён товар «{$product->name}»");
+
+        $this->homeService->clearCache();
+        $this->catalogService->clearCache();
 
         return [
             'deleted' => true,

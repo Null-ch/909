@@ -1,0 +1,40 @@
+:root {
+    --admin-gap: 24px;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--admin-gap);
+}
+
+.page-header {
+    margin-bottom: 0;
+}
+
+.admin-flash-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: var(--admin-gap);
+}
+
+.admin-flash-messages .alert {
+    margin: 0;
+}
+
+.admin-card-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--admin-gap);
+}
+
+.badge-green {
+    background: rgba(38, 185, 154, 0.15);
+    color: #26b99a;
+}
+
+.badge-yellow {
+    background: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+}

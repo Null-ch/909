@@ -35,8 +35,8 @@
         @include('layouts.partials.admin-topbar')
 
         <div class="page-wrapper">
-            @include('layouts.partials.admin-alerts')
             @yield('content')
+            @include('layouts.partials.admin-alerts')
         </div>
 
         @include('layouts.partials.admin-footer')

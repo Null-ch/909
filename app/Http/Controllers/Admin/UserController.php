@@ -30,7 +30,9 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        User::query()->create($request->validated());
+        $user = User::query()->create($request->validated());
+
+        logActivity('created', 'User', $user->id, "Создан пользователь {$user->name} ({$user->email})");
 
         return redirect()
             ->route('admin.users.index')
@@ -55,6 +57,8 @@ class UserController extends Controller
 
         $user->update($data);
 
+        logActivity('updated', 'User', $user->id, "Обновлён пользователь {$user->name} ({$user->email})");
+
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'Пользователь успешно обновлён.');
@@ -68,7 +72,11 @@ class UserController extends Controller
                 ->with('error', 'Нельзя удалить свою учётную запись.');
         }
 
+        $name = $user->name;
+        $email = $user->email;
         $user->delete();
+
+        logActivity('deleted', 'User', $user->id, "Удалён пользователь {$name} ({$email})");
 
         return redirect()
             ->route('admin.users.index')

@@ -20,6 +20,11 @@
         "@laravel/multiplex": "^0.4.1"
     },
     "dependencies": {
-        "gentelella": "^4.1.1"
+        "@popperjs/core": "^2.11.8",
+        "alpinejs": "^3.16.1",
+        "bootstrap": "^5.3.8",
+        "chart.js": "^4.5.0",
+        "gentelella": "^4.1.1",
+        "swiper": "^14.1.0"
     }
 }

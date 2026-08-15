@@ -9,6 +9,11 @@
         'Категории' => route('admin.categories.index'),
         'Товары' => route('admin.products.index'),
         'Профиль' => route('admin.profile.show'),
+        'Настройки' => route('admin.settings.edit'),
+        'Заказы' => route('admin.orders.index'),
+        'Корзины' => route('admin.carts.index'),
+        'Доставка' => route('admin.delivery-methods.index'),
+        'Журнал действий' => route('admin.activity-logs.index'),
     ];
 @endphp
 

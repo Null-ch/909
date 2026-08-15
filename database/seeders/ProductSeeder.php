@@ -25,6 +25,9 @@ class ProductSeeder extends Seeder
             'is_active' => true,
             'is_featured' => true,
             'weight' => 12.5,
+            'length' => 200,
+            'width' => 100,
+            'height' => 5,
             'meta_title' => 'Рулонный газон Премиум — купить',
             'meta_description' => 'Рулонный газон премиум-класса с доставкой.',
         ]);
@@ -48,8 +51,11 @@ class ProductSeeder extends Seeder
             'price' => 890.00,
             'quantity' => 300,
             'is_active' => true,
-            'is_featured' => false,
-            'weight' => 2.0,
+            'is_featured' => true,
+            'weight' => 8.0,
+            'length' => 30,
+            'width' => 20,
+            'height' => 15,
         ]);
 
         if ($mixCategory) {

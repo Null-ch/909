@@ -6,15 +6,43 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CategoryService
 {
     public const MAX_DEPTH = 3;
 
+    private const NAVIGATION_CACHE_KEY = 'categories.navigation';
+
     public function __construct(
         private readonly ImageService $imageService,
+        private readonly HomeService $homeService,
     ) {}
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getNavigationTree(): Collection
+    {
+        return Category::query()
+            ->whereNull('parent_id')
+            ->where('is_active', true)
+            ->with(['children' => fn ($query) => $query
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name'),
+            ])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function clearNavigationCache(): void
+    {
+        Cache::forget(self::NAVIGATION_CACHE_KEY);
+        $this->homeService->clearCache();
+    }
 
     /**
      * @return array{draw: int, recordsTotal: int, recordsFiltered: int, data: array<int, array<string, mixed>>}
@@ -109,7 +137,13 @@ class CategoryService
             $data['image'] = $this->imageService->storeCategoryImage($image);
         }
 
-        return Category::query()->create($data);
+        $category = Category::query()->create($data);
+
+        $this->clearNavigationCache();
+
+        logActivity('created', 'Category', $category->id, "Создана категория «{$category->name}»");
+
+        return $category;
     }
 
     /**
@@ -132,6 +166,10 @@ class CategoryService
 
         $category->update($data);
 
+        $this->clearNavigationCache();
+
+        logActivity('updated', 'Category', $category->id, "Обновлена категория «{$category->name}»");
+
         return $category->refresh();
     }
 
@@ -141,9 +179,16 @@ class CategoryService
 
         $category->products()->detach();
 
+        $name = $category->name;
+        $categoryId = $category->id;
+
         $this->softDeleteDescendants($category);
 
         $category->delete();
+
+        $this->clearNavigationCache();
+
+        logActivity('deleted', 'Category', $categoryId, "Удалена категория «{$name}»");
 
         return $detachedProducts;
     }

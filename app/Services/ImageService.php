@@ -24,6 +24,16 @@ class ImageService
         return $this->storeResizedImage($file, 'products/thumbs', 50, 50);
     }
 
+    public function storeSettingLogo(UploadedFile $file): string
+    {
+        return $this->storeResizedImage($file, 'settings', 400, 200, false);
+    }
+
+    public function storeSettingFavicon(UploadedFile $file): string
+    {
+        return $this->storeResizedImage($file, 'settings/favicons', 64, 64);
+    }
+
     private function storeResizedImage(UploadedFile $file, string $directory, int $width, int $height, bool $cover = true): string
     {
         $filename = Str::uuid().'.'.$file->getClientOriginalExtension();

@@ -31,6 +31,24 @@
     </div>
 </div>
 
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label" for="length">Длина (см)</label>
+        <input type="number" id="length" name="length" class="form-control @error('length') is-invalid @enderror" value="{{ old('length', $product->length ?? '') }}" min="0" step="0.01">
+        @error('length')<div class="form-help" style="color:var(--danger)">{{ $message }}</div>@enderror
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="width">Ширина (см)</label>
+        <input type="number" id="width" name="width" class="form-control @error('width') is-invalid @enderror" value="{{ old('width', $product->width ?? '') }}" min="0" step="0.01">
+        @error('width')<div class="form-help" style="color:var(--danger)">{{ $message }}</div>@enderror
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="height">Высота (см)</label>
+        <input type="number" id="height" name="height" class="form-control @error('height') is-invalid @enderror" value="{{ old('height', $product->height ?? '') }}" min="0" step="0.01">
+        @error('height')<div class="form-help" style="color:var(--danger)">{{ $message }}</div>@enderror
+    </div>
+</div>
+
 <div class="form-group">
     <label class="form-label" for="short_description">Краткое описание</label>
     <textarea id="short_description" name="short_description" class="form-control @error('short_description') is-invalid @enderror" rows="3">{{ old('short_description', $product->short_description ?? '') }}</textarea>

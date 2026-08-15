@@ -1,184 +1,129 @@
 @extends('layouts.gentelella')
 
-
-
 @section('title', 'Админ-панель')
-
 @section('page', 'dashboard')
-
 @section('breadcrumb', 'Главная > Панель управления')
 
-
+@push('scripts')
+    @vite(['resources/js/admin-dashboard.js'])
+@endpush
 
 @section('content')
-
     <div class="page-header">
-
         <div class="page-header-row">
-
             <div>
-
                 <div class="page-pretitle">Обзор</div>
-
                 <h1 class="page-title">Панель управления</h1>
-
             </div>
-
             <div class="page-actions">
-
-                <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-
-                        <path d="M8 2v12M2 8h12"/>
-
-                    </svg>
-
-                    Новый пользователь
-
-                </a>
-
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-outline">Все заказы</a>
             </div>
-
         </div>
-
     </div>
-
-
 
     <div class="row col-3">
-
         <div class="card">
-
             <div class="stat">
-
-                <div class="stat-icon teal">
-
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-
-                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-
-                        <circle cx="9" cy="7" r="4"/>
-
-                    </svg>
-
-                </div>
-
-                <div class="stat-content">
-
-                    <div class="stat-label">Пользователи</div>
-
-                    <div class="stat-value-row">
-
-                        <span class="stat-value">{{ $usersCount }}</span>
-
-                    </div>
-
-                    <div class="stat-subtext">Всего в системе</div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="stat">
-
                 <div class="stat-icon blue">
-
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-
-                        <circle cx="12" cy="12" r="10"/>
-
-                        <polyline points="12 6 12 12 16 14"/>
-
+                        <path d="M6 2h9l3 3v13a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1z"/>
                     </svg>
-
                 </div>
-
                 <div class="stat-content">
-
-                    <div class="stat-label">Роль</div>
-
+                    <div class="stat-label">Новые заказы сегодня</div>
                     <div class="stat-value-row">
-
-                        <span class="stat-value" style="font-size:18px">Администратор</span>
-
+                        <span class="stat-value">{{ $newOrdersToday }}</span>
                     </div>
-
-                    <div class="stat-subtext">{{ auth()->user()->email }}</div>
-
+                    <div class="stat-subtext">Со статусом «Новый»</div>
                 </div>
-
             </div>
-
         </div>
 
         <div class="card">
-
             <div class="stat">
-
                 <div class="stat-icon yellow">
-
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-
+                        <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                     </svg>
-
                 </div>
-
                 <div class="stat-content">
-
-                    <div class="stat-label">Доступ</div>
-
+                    <div class="stat-label">Низкий остаток</div>
                     <div class="stat-value-row">
-
-                        <span class="stat-value" style="font-size:18px">Защищён</span>
-
+                        <span class="stat-value">{{ $lowStockProducts->count() }}</span>
                     </div>
-
-                    <div class="stat-subtext">Требуется авторизация</div>
-
+                    <div class="stat-subtext">Меньше 5 шт.</div>
                 </div>
-
             </div>
-
         </div>
 
+        <div class="card">
+            <div class="stat">
+                <div class="stat-icon teal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Выручка за месяц</div>
+                    <div class="stat-value-row">
+                        <span class="stat-value">{{ number_format($monthlyRevenue, 0, '.', ' ') }} ₽</span>
+                    </div>
+                    <div class="stat-subtext">{{ now()->translatedFormat('F Y') }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-
-    <div class="card" style="margin-top:var(--gap)">
-
-        <div class="card-header">
-
-            <h3 class="card-title">Быстрые действия</h3>
-
+    <div class="row col-2" style="margin-top: var(--admin-gap, 24px);">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Продажи за неделю</div>
+                <div class="card-subtitle">Оплаченные заказы</div>
+            </div>
+            <div class="card-body">
+                <canvas
+                    id="sales-chart"
+                    height="220"
+                    data-labels='@json($chartLabels)'
+                    data-values='@json($chartValues)'
+                ></canvas>
+            </div>
         </div>
 
-        <div class="card-body">
-
-            <p style="margin:0 0 16px;color:var(--text-muted)">
-
-                Вы вошли как <strong>{{ auth()->user()->name }}</strong>.
-
-                Управляйте пользователями системы из раздела ниже.
-
-            </p>
-
-            <a href="{{ route('admin.users.index') }}" class="btn btn-outline">
-
-                Перейти к пользователям
-
-            </a>
-
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Товары с низким остатком</div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>SKU</th>
+                                <th>Остаток</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($lowStockProducts as $product)
+                                <tr>
+                                    <td>
+                                        <a href="{{ route('admin.products.edit', $product) }}">{{ $product->name }}</a>
+                                    </td>
+                                    <td>{{ $product->sku }}</td>
+                                    <td><span class="badge badge-red">{{ $product->quantity }} шт.</span></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" style="text-align:center;color:var(--text-muted);padding:24px">
+                                        Все товары в норме
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-
     </div>
-
 @endsection
-

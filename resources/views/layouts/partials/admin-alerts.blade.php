@@ -1,11 +1,15 @@
-@if (session('success'))
-    <div class="alert alert-success" style="margin-bottom: var(--gap);">
-        {{ session('success') }}
-    </div>
-@endif
+@if (session('success') || session('error'))
+    <div class="admin-flash-messages">
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
 
-@if (session('error'))
-    <div class="alert alert-danger" style="margin-bottom: var(--gap);">
-        {{ session('error') }}
+        @if (session('error'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
     </div>
 @endif
