@@ -15,7 +15,7 @@ A Laravel 13 e-commerce storefront: product catalog, cart, checkout, delivery me
 
 | Service | Env var | Default | Host bind |
 |---|---|---|---|
-| App (nginx, HTTP) | `APP_PORT` | `8888` | `0.0.0.0` (all interfaces) |
+| App (nginx, HTTP) | `APP_PORT` | `8888` | `127.0.0.1` only — put a reverse proxy in front for public/domain access |
 | MySQL | `FORWARD_DB_PORT` | `33061` | `127.0.0.1` only (not reachable from outside the host) |
 
 Before starting the stack, confirm these are actually free on your host:
@@ -75,7 +75,16 @@ docker compose down -v              # stop and wipe DB/volumes — destructive
 
 ### Reverse proxy / TLS
 
-The `nginx` container only serves plain HTTP on `APP_PORT`. If you want this reachable at a domain with HTTPS, put your own reverse proxy (e.g. Caddy, or another nginx) on the host in front of `127.0.0.1:8888` and terminate TLS there — don't publish `APP_PORT` on `0.0.0.0` if you do this, bind it to `127.0.0.1` instead by changing the compose port mapping to `"127.0.0.1:${APP_PORT:-8888}:80"`.
+The `nginx` container only serves plain HTTP, bound to `127.0.0.1:${APP_PORT}` (not reachable from outside the host). To reach it at a domain with HTTPS, put your own reverse proxy (e.g. Caddy, or another nginx) on the host in front of that address and terminate TLS there — e.g. proxy `grass.fqknscp.digital` → `127.0.0.1:8888`.
+
+Laravel is already configured to trust that proxy (`bootstrap/app.php` calls `trustProxies(at: '*')`, safe here since nothing but the local proxy can reach the app port), so `X-Forwarded-Proto` from the proxy is honored for HTTPS detection. Once the domain + TLS are live, also set in `.env`:
+
+```
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://grass.fqknscp.digital
+SESSION_SECURE_COOKIE=true
+```
 
 ## Option B — Local development without Docker
 

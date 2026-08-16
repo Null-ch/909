@@ -17,6 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.guard' => \App\Http\Middleware\UseAdminGuard::class,
         ]);
 
+        // The host's reverse proxy (terminating TLS for the public domain) forwards
+        // to nginx over plain HTTP inside the Docker network, so its address isn't
+        // fixed. nginx's own port is bound to 127.0.0.1 only, so trusting all
+        // proxies here is safe — nothing but that local proxy can reach it.
+        $middleware->trustProxies(at: '*');
+
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
 
         $middleware->redirectGuestsTo(fn (Request $request) => $request->is('admin') || $request->is('admin/*')

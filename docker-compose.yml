@@ -33,7 +33,7 @@ services:
     container_name: laravel-nginx
     restart: unless-stopped
     ports:
-      - "${APP_PORT:-8888}:80"
+      - "127.0.0.1:${APP_PORT:-8888}:80"
     volumes:
       - ./:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -58,7 +58,7 @@ services:
     networks:
       - laravel
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-psecret"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\""]
       interval: 5s
       timeout: 5s
       retries: 10
