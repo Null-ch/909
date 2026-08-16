@@ -73,6 +73,17 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Failed logins, admin auth failures and other suspicious activity —
+        // kept in its own file/rotation so it isn't lost in general app
+        // noise and can be shipped to a SIEM independently of `laravel.log`.
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security.log'),
+            'level' => env('LOG_SECURITY_LEVEL', 'info'),
+            'max_files' => env('LOG_SECURITY_DAYS', 90),
+            'replace_placeholders' => true,
+        ],
+
         'monthly' => [
             'driver' => 'monthly',
             'path' => storage_path('logs/laravel.log'),
