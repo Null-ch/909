@@ -12,17 +12,6 @@
     margin-bottom: 0;
 }
 
-.admin-flash-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: var(--admin-gap);
-}
-
-.admin-flash-messages .alert {
-    margin: 0;
-}
-
 .admin-card-stack {
     display: flex;
     flex-direction: column;
@@ -37,4 +26,93 @@
 .badge-yellow {
     background: rgba(243, 156, 18, 0.15);
     color: #f39c12;
+}
+
+// ────────────────────────
+//  IMAGE DROPZONE
+// ────────────────────────
+.image-dropzone {
+    position: relative;
+    border: 2px dashed var(--border-color-light);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.image-dropzone:hover,
+.image-dropzone.is-dragover {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+.image-dropzone input[type='file'] {
+    display: none;
+}
+
+.image-dropzone-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.image-dropzone-empty svg {
+    width: 30px;
+    height: 30px;
+    opacity: 0.55;
+}
+
+.image-dropzone-preview {
+    display: none;
+}
+
+.image-dropzone.has-image .image-dropzone-empty {
+    display: none;
+}
+
+.image-dropzone.has-image .image-dropzone-preview {
+    display: block;
+}
+
+.image-dropzone-preview img {
+    max-width: 100%;
+    max-height: 240px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color-light);
+    display: block;
+    margin: 0 auto;
+}
+
+.image-dropzone-remove {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.image-dropzone-remove:hover {
+    background: var(--danger);
+}
+
+.image-dropzone.has-image .image-dropzone-remove {
+    display: flex;
+}
+
+.image-dropzone-multi .image-dropzone-empty {
+    display: flex;
 }

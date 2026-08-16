@@ -35,37 +35,37 @@ class SettingDefinitions
                 'default' => '© ГазонМаркет. Все права защищены.',
             ],
             'logo' => [
-                'group' => 'general',
+                'group' => 'logo',
                 'type' => 'image',
                 'label' => 'Логотип',
                 'default' => null,
             ],
             'favicon' => [
-                'group' => 'general',
+                'group' => 'logo',
                 'type' => 'image',
                 'label' => 'Favicon',
                 'default' => null,
             ],
             'social_vk' => [
-                'group' => 'general',
+                'group' => 'social',
                 'type' => 'text',
                 'label' => 'ВКонтакте',
                 'default' => null,
             ],
             'social_telegram' => [
-                'group' => 'general',
+                'group' => 'social',
                 'type' => 'text',
                 'label' => 'Telegram',
                 'default' => null,
             ],
             'social_whatsapp' => [
-                'group' => 'general',
+                'group' => 'social',
                 'type' => 'text',
                 'label' => 'WhatsApp',
                 'default' => null,
             ],
             'benefits' => [
-                'group' => 'general',
+                'group' => 'benefits',
                 'type' => 'json',
                 'label' => 'Карусель преимуществ',
                 'default' => json_encode([
@@ -98,6 +98,24 @@ class SettingDefinitions
                 'label' => 'Карта (iframe)',
                 'default' => null,
             ],
+            'seo_home_title' => [
+                'group' => 'home',
+                'type' => 'text',
+                'label' => 'Meta Title главной',
+                'default' => 'ГазонМаркет — купить газон с доставкой',
+            ],
+            'seo_home_description' => [
+                'group' => 'home',
+                'type' => 'textarea',
+                'label' => 'Meta Description главной',
+                'default' => 'Интернет-магазин рулонного газона, семян и удобрений. Доставка по региону, гарантия качества.',
+            ],
+            'seo_home_text' => [
+                'group' => 'home',
+                'type' => 'wysiwyg',
+                'label' => 'SEO-текст на главной',
+                'default' => '<p>«ГазонМаркет» — ваш надёжный поставщик рулонного газона, семян и средств ухода. Мы работаем напрямую с производителями и предлагаем конкурентные цены как для частных клиентов, так и для ландшафтных компаний.</p>',
+            ],
             'seo_meta_title' => [
                 'group' => 'seo',
                 'type' => 'text',
@@ -116,24 +134,6 @@ class SettingDefinitions
                 'label' => 'Глобальный Meta Description',
                 'default' => 'Купить газон с доставкой. Широкий ассортимент, выгодные цены, профессиональная консультация.',
             ],
-            'seo_home_title' => [
-                'group' => 'seo',
-                'type' => 'text',
-                'label' => 'Meta Title главной',
-                'default' => 'ГазонМаркет — купить газон с доставкой',
-            ],
-            'seo_home_description' => [
-                'group' => 'seo',
-                'type' => 'textarea',
-                'label' => 'Meta Description главной',
-                'default' => 'Интернет-магазин рулонного газона, семян и удобрений. Доставка по региону, гарантия качества.',
-            ],
-            'seo_home_text' => [
-                'group' => 'seo',
-                'type' => 'wysiwyg',
-                'label' => 'SEO-текст на главной',
-                'default' => '<p>«ГазонМаркет» — ваш надёжный поставщик рулонного газона, семян и средств ухода. Мы работаем напрямую с производителями и предлагаем конкурентные цены как для частных клиентов, так и для ландшафтных компаний.</p>',
-            ],
         ];
     }
 
@@ -144,7 +144,11 @@ class SettingDefinitions
     {
         return [
             'general' => 'Общие',
+            'logo' => 'Логотип и Favicon',
+            'social' => 'Социальные сети',
+            'benefits' => 'Карусель преимуществ',
             'contacts' => 'Контакты',
+            'home' => 'Главная страница',
             'seo' => 'SEO',
         ];
     }

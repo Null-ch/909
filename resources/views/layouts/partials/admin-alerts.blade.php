@@ -1,15 +1,8 @@
 @if (session('success') || session('error'))
-    <div class="admin-flash-messages">
-        @if (session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger" role="alert">
-                {{ session('error') }}
-            </div>
-        @endif
-    </div>
+    <script type="application/json" data-admin-flash>
+        {!! json_encode(array_filter([
+            'success' => session('success'),
+            'error' => session('error'),
+        ])) !!}
+    </script>
 @endif

@@ -1,20 +1,27 @@
 import 'gentelella/scss/v4/main.scss';
 import '../scss/admin-overrides.scss';
 import { mountShell } from 'gentelella/v4/shell';
+import { showToast } from 'gentelella/v4/toast';
 import './admin-confirm.js';
 
 mountShell();
 
-// Уведомления показываем под заголовком страницы, а не над ним.
-const flashMessages = document.querySelector('.admin-flash-messages');
-const pageHeader = document.querySelector('.page-header');
+// Флеш-сообщения сервера показываем как самоисчезающие тосты.
+const flashDataEl = document.querySelector('[data-admin-flash]');
 
-if (flashMessages) {
-    if (pageHeader) {
-        pageHeader.insertAdjacentElement('afterend', flashMessages);
-    } else {
-        const pageWrapper = document.querySelector('.page-wrapper');
-        pageWrapper?.insertBefore(flashMessages, pageWrapper.firstChild);
+if (flashDataEl) {
+    try {
+        const flash = JSON.parse(flashDataEl.textContent || '{}');
+
+        if (flash.success) {
+            showToast(flash.success, { variant: 'success', duration: 4000 });
+        }
+
+        if (flash.error) {
+            showToast(flash.error, { variant: 'error', duration: 4000 });
+        }
+    } catch {
+        // Игнорируем некорректный JSON во флеш-данных.
     }
 }
 

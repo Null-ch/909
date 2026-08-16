@@ -155,10 +155,15 @@
             </div>
         @endif
 
-        <div id="gallery-dropzone" style="border:2px dashed var(--border-color-light);border-radius:var(--radius);padding:24px;text-align:center;color:var(--text-muted)">
-            Перетащите изображения сюда или выберите файлы
-            <div style="margin-top:8px">
-                <input type="file" id="images" name="images[]" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+        <div id="gallery-dropzone" class="image-dropzone image-dropzone-multi">
+            <input type="file" id="images" name="images[]" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+            <div class="image-dropzone-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p style="margin:0">Перетащите изображения сюда или</p>
+                <button type="button" class="btn btn-outline btn-sm" id="gallery-browse-btn">Выбрать файлы</button>
             </div>
         </div>
         <div id="new-gallery-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:16px"></div>

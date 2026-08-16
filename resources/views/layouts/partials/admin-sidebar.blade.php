@@ -54,6 +54,18 @@
         </div>
 
         <div class="nav-group">
+            <div class="nav-label">Главная страница</div>
+
+            <a class="nav-link{{ str_starts_with($activePage, 'banners') ? ' active' : '' }}" href="{{ route('admin.banners.index') }}" @if (str_starts_with($activePage, 'banners')) aria-current="page" @endif>
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <path d="M2 15l5-5 4 4 5-5 6 6"/>
+                </svg>
+                <span class="nav-text">Баннеры</span>
+            </a>
+        </div>
+
+        <div class="nav-group">
             <div class="nav-label">Управление</div>
             <a class="nav-link{{ $activePage === 'dashboard' ? ' active' : '' }}" href="{{ route('admin.dashboard') }}" @if ($activePage === 'dashboard') aria-current="page" @endif>
                 <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

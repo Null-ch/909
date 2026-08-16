@@ -11,7 +11,7 @@ class ImageService
 {
     public function storeCategoryImage(UploadedFile $file): string
     {
-        return $this->storeResizedImage($file, 'categories', 800, 600);
+        return $this->storeResizedImage($file, 'categories', 800, 600, false);
     }
 
     public function storeProductImage(UploadedFile $file): string
@@ -27,6 +27,11 @@ class ImageService
     public function storeSettingLogo(UploadedFile $file): string
     {
         return $this->storeResizedImage($file, 'settings', 400, 200, false);
+    }
+
+    public function storeBannerImage(UploadedFile $file): string
+    {
+        return $this->storeResizedImage($file, 'banners', 1920, 700);
     }
 
     public function storeSettingFavicon(UploadedFile $file): string

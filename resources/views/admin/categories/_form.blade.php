@@ -68,28 +68,32 @@
 
 <div class="form-group">
     <label class="form-label" for="image">Изображение категории</label>
-    <input
-        type="file"
-        id="image"
-        name="image"
-        class="form-control @error('image') is-invalid @enderror"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        data-image-preview="category-image-preview"
-    >
+    <div class="image-dropzone" data-image-dropzone>
+        <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+        >
+        <div class="image-dropzone-preview" data-dropzone-preview>
+            @if ($isEdit && $category->image)
+                <img src="{{ asset('storage/'.$category->image) }}" alt="{{ $category->name }}">
+            @endif
+        </div>
+        <div class="image-dropzone-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p style="margin:0">Перетащите изображение сюда или</p>
+            <button type="button" class="btn btn-outline btn-sm" data-dropzone-browse>Выбрать файл</button>
+        </div>
+        <button type="button" class="image-dropzone-remove" data-dropzone-remove aria-label="Убрать изображение">×</button>
+    </div>
     <div class="form-help">Рекомендуемый размер: 800×600. Форматы: JPG, PNG, WebP, GIF.</div>
     @error('image')
         <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
     @enderror
-
-    <div id="category-image-preview" style="margin-top:12px">
-        @if ($isEdit && $category->image)
-            <img
-                src="{{ asset('storage/'.$category->image) }}"
-                alt="{{ $category->name }}"
-                style="max-width:320px;border-radius:var(--radius);border:1px solid var(--border-color-light)"
-            >
-        @endif
-    </div>
 </div>
 
 <div class="form-group">
