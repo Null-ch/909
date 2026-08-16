@@ -540,7 +540,7 @@ body.site-body {
 .home-benefits__icon {
     font-size: 2.25rem;
     color: $primary;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .home-benefits__title {
@@ -609,6 +609,67 @@ body.site-body {
     color: #6c757d;
     font-size: 0.9rem;
     margin: 0;
+}
+
+.home-slider {
+    position: relative;
+    padding: 0 2.75rem;
+}
+
+.home-categories__slider,
+.home-featured__slider {
+    width: 100%;
+    padding: 8px 2px 16px;
+}
+
+.home-slider__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid rgba($primary, 0.15);
+    border-radius: 50%;
+    background: #fff;
+    color: $primary;
+    box-shadow: $box-shadow-sm;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        background: $primary;
+        color: #fff;
+        box-shadow: $box-shadow;
+    }
+
+    &.swiper-button-disabled {
+        opacity: 0.35;
+        pointer-events: none;
+    }
+}
+
+.home-slider__prev {
+    left: 0;
+}
+
+.home-slider__next {
+    right: 0;
+}
+
+@media (max-width: 575.98px) {
+    .home-slider {
+        padding: 0 2.25rem;
+    }
+
+    .home-slider__nav {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
 }
 
 .product-card {

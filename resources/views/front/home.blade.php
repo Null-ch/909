@@ -85,28 +85,55 @@
         <section class="home-categories py-5 bg-light-green">
             <div class="container">
                 <h2 class="section-title text-center">Категории товаров</h2>
-                <div class="row g-4">
-                    @foreach($categories as $category)
-                        <div class="col-lg-4 col-md-6">
-                            <a href="{{ url('/category/'.$category->slug) }}" class="home-categories__card text-decoration-none">
-                                <div class="home-categories__image-wrap">
-                                    @if($category->image)
-                                        <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}" class="home-categories__image">
-                                    @else
-                                        <div class="home-categories__placeholder">
-                                            <i class="fa-solid fa-seedling"></i>
+                <div class="home-slider">
+                    <div class="swiper home-categories__slider"
+                         x-data
+                         x-init="
+                            new Swiper($el, {
+                                modules: [SwiperModules.Navigation],
+                                slidesPerView: 1,
+                                spaceBetween: 24,
+                                watchOverflow: true,
+                                navigation: {
+                                    nextEl: '.home-categories__next',
+                                    prevEl: '.home-categories__prev',
+                                },
+                                breakpoints: {
+                                    576: { slidesPerView: 2 },
+                                    992: { slidesPerView: 3 },
+                                },
+                            })
+                         ">
+                        <div class="swiper-wrapper">
+                            @foreach($categories as $category)
+                                <div class="swiper-slide">
+                                    <a href="{{ url('/category/'.$category->slug) }}" class="home-categories__card text-decoration-none">
+                                        <div class="home-categories__image-wrap">
+                                            @if($category->image)
+                                                <img src="{{ storage_url($category->image) }}" alt="{{ $category->name }}" class="home-categories__image">
+                                            @else
+                                                <div class="home-categories__placeholder">
+                                                    <i class="fa-solid fa-seedling"></i>
+                                                </div>
+                                            @endif
                                         </div>
-                                    @endif
+                                        <div class="home-categories__body">
+                                            <h3 class="home-categories__title">{{ $category->name }}</h3>
+                                            @if($category->plainDescription())
+                                                <p class="home-categories__text">{{ Str::limit($category->plainDescription(), 90) }}</p>
+                                            @endif
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="home-categories__body">
-                                    <h3 class="home-categories__title">{{ $category->name }}</h3>
-                                    @if($category->plainDescription())
-                                        <p class="home-categories__text">{{ Str::limit($category->plainDescription(), 90) }}</p>
-                                    @endif
-                                </div>
-                            </a>
+                            @endforeach
                         </div>
-                    @endforeach
+                    </div>
+                    <button type="button" class="home-slider__nav home-slider__prev home-categories__prev" aria-label="Предыдущие категории">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="home-slider__nav home-slider__next home-categories__next" aria-label="Следующие категории">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </section>
@@ -120,12 +147,40 @@
                     <h2 class="section-title mb-0">Хиты продаж</h2>
                     <a href="{{ url('/catalog') }}" class="btn btn-outline-primary">Весь каталог</a>
                 </div>
-                <div class="row g-4">
-                    @foreach($featuredProducts as $product)
-                        <div class="col-xl-3 col-lg-4 col-md-6" wire:key="product-{{ $product->id }}">
-                            <livewire:product-card :product="$product" :key="'product-card-'.$product->id" />
+                <div class="home-slider">
+                    <div class="swiper home-featured__slider"
+                         x-data
+                         x-init="
+                            new Swiper($el, {
+                                modules: [SwiperModules.Navigation],
+                                slidesPerView: 1,
+                                spaceBetween: 24,
+                                watchOverflow: true,
+                                navigation: {
+                                    nextEl: '.home-featured__next',
+                                    prevEl: '.home-featured__prev',
+                                },
+                                breakpoints: {
+                                    576: { slidesPerView: 2 },
+                                    992: { slidesPerView: 3 },
+                                    1200: { slidesPerView: 4 },
+                                },
+                            })
+                         ">
+                        <div class="swiper-wrapper">
+                            @foreach($featuredProducts as $product)
+                                <div class="swiper-slide" wire:key="product-{{ $product->id }}">
+                                    <livewire:product-card :product="$product" :key="'product-card-'.$product->id" />
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                    </div>
+                    <button type="button" class="home-slider__nav home-slider__prev home-featured__prev" aria-label="Предыдущие товары">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="home-slider__nav home-slider__next home-featured__next" aria-label="Следующие товары">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </section>
