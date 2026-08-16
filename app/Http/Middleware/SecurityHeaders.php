@@ -29,7 +29,13 @@ class SecurityHeaders
         if (! $response->headers->has('Content-Security-Policy')) {
             $response->headers->set('Content-Security-Policy', implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline'",
+                // 'unsafe-eval' is required by Alpine.js (bundled with Livewire):
+                // it evaluates x-data/x-show/@click expression strings via
+                // `new Function()`, which the CSP spec classifies as eval.
+                // Alpine ships a CSP-safe build that avoids this, but adopting
+                // it means pre-compiling every x-data expression — a separate,
+                // larger change than this security pass.
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
                 "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
                 "img-src 'self' data: blob:",
