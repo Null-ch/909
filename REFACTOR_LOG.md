@@ -56,9 +56,16 @@ back as `__PHP_Incomplete_Class`, 500-ing the catalog page on every cache hit
 after the first. Fixed by caching only plain product IDs + total count, not
 model instances (see Search section below).
 
-All three were caught and fixed within this session via direct
-verification against the running containers (not just "should work"
-reasoning) before considering the work done.
+A fourth bug surfaced after that: the CSP's `script-src` didn't include
+`'unsafe-eval'`, which Alpine.js (bundled with Livewire) needs to evaluate
+`x-data`/`x-show`/`@click` expression strings via `new Function()`. Without
+it, every Alpine directive on the site threw `EvalError` in the console —
+dropdowns, mobile filters, and anything else driven by Alpine state
+silently stopped working. Fixed by adding `'unsafe-eval'` to `script-src`.
+
+All four were caught and fixed within this session via direct verification
+against the running containers (not just "should work" reasoning) before
+considering the work done.
 
 ---
 
@@ -129,7 +136,7 @@ filter sidebar (`search` bound via `wire:model.live.debounce.400ms`).
 | XSS | ✅ Verified | Blade `{{ }}` escaping is used throughout; tested with `<script>alert(1)</script>` against `/search` |
 | CSRF | ✅ Already covered | `VerifyCsrfToken` is active by default (Laravel 11+ `bootstrap/app.php` style); every `method="POST"` form in `resources/views` was checked programmatically — all have `@csrf` |
 | Mass assignment | ✅ Already covered | All 13 models declare `#[Fillable([...])]` explicitly; none use open `$guarded = []` |
-| Security headers | ✅ Added | New `App\Http\Middleware\SecurityHeaders`, applied globally: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-XSS-Protection`, `Referrer-Policy`, `Permissions-Policy`, and a CSP scoped to `'self'` plus the two third-party origins the layout actually uses (Google Fonts, Font Awesome's CDN) |
+| Security headers | ✅ Added | New `App\Http\Middleware\SecurityHeaders`, applied globally: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-XSS-Protection`, `Referrer-Policy`, `Permissions-Policy`, and a CSP scoped to `'self'` plus the two third-party origins the layout actually uses (Google Fonts, Font Awesome's CDN). `script-src` includes `'unsafe-eval'`, required by Alpine.js/Livewire's expression evaluation — see incident #4 above; adopting Alpine's CSP-safe build to drop it is a separate, larger change |
 | Rate limiting | ✅ Added | `throttle:5,1` on login (both guards) + registration, `throttle:60,1` on `/search` |
 | Auth logging | ✅ Added | New `security` log channel (`storage/logs/security-*.log`, 90-day retention); listens for Laravel's own `Login`/`Failed` auth events (covers both guards, no controller changes needed) |
 | `.env` / `.git` exposure | ✅ Already covered | `docker/nginx/default.conf` already has `location ~ /\.(?!well-known).* { deny all; }` |
