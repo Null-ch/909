@@ -1,58 +1,121 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# GAZONI
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 13 e-commerce storefront: product catalog, cart, checkout, delivery methods, and an admin panel (products, categories, orders, banners, settings, activity log), built with Livewire and Tailwind/Vite.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3, Laravel 13, Livewire 4
+- MySQL 8.4 (Docker) or SQLite (local dev)
+- Vite + Tailwind CSS 4 for front-end assets
+- nginx + php-fpm (Docker)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Ports used by this project
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**All ports are non-default and configurable via `.env`.** They were chosen to avoid clashing with the containers already running on this server (`cabinet_frontend:3020`, `remnawave_bot:8080`, `remnawave:3000-3001`, `remnawave-db:6767`, `remnawave-subscription-page:3010`).
 
-## Learning Laravel
+| Service | Env var | Default | Host bind |
+|---|---|---|---|
+| App (nginx, HTTP) | `APP_PORT` | `8888` | `0.0.0.0` (all interfaces) |
+| MySQL | `FORWARD_DB_PORT` | `33061` | `127.0.0.1` only (not reachable from outside the host) |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Before starting the stack, confirm these are actually free on your host:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+ss -tulpn | grep -E ':8888|:33061'
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+If either port is in use, set `APP_PORT` / `FORWARD_DB_PORT` in `.env` to something else before running `docker compose up`. Nothing else in the stack (php-fpm, the app container) publishes a port to the host — nginx and MySQL are the only entry points.
 
-## Contributing
+> The app container talks to MySQL over the internal Docker network (`mysql:3306`), so changing `FORWARD_DB_PORT` only affects host access (e.g. connecting a local DB client) — it does not need to match anything the app itself uses.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Option A — Docker (recommended for this server)
 
-## Code of Conduct
+Requirements: Docker + Docker Compose plugin.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Copy the environment file and generate an app key placeholder:
+   ```bash
+   cp .env.example .env
+   ```
+2. Review `.env` — at minimum set `APP_URL` to how you'll reach the app (e.g. `http://your-server-ip:8888` or a domain if you're putting a reverse proxy in front), and change `DB_PASSWORD` from the default `secret`.
+3. Start the stack:
+   ```bash
+   docker compose up -d --build
+   ```
+   The `app` container's entrypoint ([docker/entrypoint.sh](docker/entrypoint.sh)) automatically, on first boot:
+   - waits for MySQL to be healthy
+   - runs `composer install`
+   - generates `APP_KEY` if missing
+   - runs `npm install` and `npm run build` (compiles front-end assets)
+   - runs migrations (`php artisan migrate --force`)
+   - links `storage` for public file access
 
-## Security Vulnerabilities
+   This first run can take a few minutes (asset build + composer install). Subsequent restarts skip all of this (tracked via `.docker/bootstrapped`).
+4. Visit `http://<server-ip>:8888` (or whatever `APP_PORT` you set).
+5. Seed demo data (products, categories, an admin account, etc.) — optional, useful for a fresh non-production instance:
+   ```bash
+   docker compose exec app php artisan db:seed
+   ```
+   This creates:
+   - Admin: `admin@example.com` / `password` (log in at `/admin/login`)
+   - Regular user: `test@example.com` / `password`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   **Change or remove these accounts before exposing the site publicly.**
 
-## License
+### Useful commands
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker compose logs -f app          # app/entrypoint logs
+docker compose exec app bash        # shell into the app container
+docker compose exec app php artisan migrate      # run new migrations
+docker compose exec app php artisan tinker       # REPL
+docker compose exec app npm run build            # rebuild front-end assets after asset changes
+docker compose down                 # stop (keeps volumes/data)
+docker compose down -v              # stop and wipe DB/volumes — destructive
+```
+
+### Reverse proxy / TLS
+
+The `nginx` container only serves plain HTTP on `APP_PORT`. If you want this reachable at a domain with HTTPS, put your own reverse proxy (e.g. Caddy, or another nginx) on the host in front of `127.0.0.1:8888` and terminate TLS there — don't publish `APP_PORT` on `0.0.0.0` if you do this, bind it to `127.0.0.1` instead by changing the compose port mapping to `"127.0.0.1:${APP_PORT:-8888}:80"`.
+
+## Option B — Local development without Docker
+
+Useful for coding on the app directly rather than running it as a deployed service.
+
+Requirements: PHP 8.3+, Composer, Node.js 22+, and either SQLite (default) or a local MySQL server.
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite   # only if DB_CONNECTION=sqlite
+php artisan migrate
+npm install
+npm run build          # one-off asset build, or:
+npm run dev             # Vite dev server with hot reload
+```
+
+Then serve the app on a non-default port to keep it out of the way of anything else on your machine:
+
+```bash
+php artisan serve --port=8891
+```
+
+Run `npm run dev` in a separate terminal while developing so Blade/CSS/JS changes hot-reload.
+
+## Environment reference
+
+Key variables in `.env` (see [.env.example](.env.example) for the full list):
+
+| Variable | Purpose |
+|---|---|
+| `APP_URL` | Public base URL — must match how you actually access the app, or asset URLs/redirects will be wrong |
+| `APP_PORT` | Host port nginx binds to (Docker only) |
+| `DB_CONNECTION` | `mysql` (Docker) or `sqlite` (local dev default) |
+| `FORWARD_DB_PORT` | Host port MySQL binds to, for connecting external DB tools (Docker only) |
+| `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` | MySQL credentials — change the default password before any real deployment |
+
+## Notes
+
+- No queue worker or scheduler is currently used by the app (no `ShouldQueue` jobs, no scheduled commands), so the Docker stack doesn't run one — `php-fpm` alone is sufficient.
+- Content-Security-Policy is enforced via `App\Http\Middleware\SecurityHeaders`. If you add new external script/style/font sources, allowlist them there or they'll be silently blocked by the browser.
+- See [REFACTOR_LOG.md](REFACTOR_LOG.md) for a detailed history of a recent security/search refactor, including a documented incident and its fix — worth reading before running the test suite against a database you care about (`RefreshDatabase` tests are configured to use in-memory SQLite via `phpunit.xml`, not your dev database, but double-check this if you change DB config).

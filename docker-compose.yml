@@ -47,7 +47,7 @@ services:
     container_name: laravel-mysql
     restart: unless-stopped
     ports:
-      - "${FORWARD_DB_PORT:-3306}:3306"
+      - "127.0.0.1:${FORWARD_DB_PORT:-33061}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
       MYSQL_DATABASE: ${DB_DATABASE:-laravel}
