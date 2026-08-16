@@ -5,12 +5,17 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class CatalogService
 {
     private const PRICE_BOUNDS_KEY = 'catalog.price_bounds';
+
+    public function __construct(
+        private readonly SearchService $searchService,
+    ) {}
 
     /**
      * @return array{min: float, max: float}
@@ -73,39 +78,21 @@ class CatalogService
         string $sort = 'newest',
         int $perPage = 12,
     ): LengthAwarePaginator {
-        $query = Product::query()
-            ->where('is_active', true)
-            ->with(['images' => fn ($imageQuery) => $imageQuery->orderBy('sort_order')]);
+        // The price slider reports its bounds as priceMin/priceMax even when
+        // the user hasn't touched it, so only pass a bound through as an
+        // actual filter once it's been moved off the slider's own floor/ceiling.
+        $effectiveMin = ($priceBoundMax > $priceBoundMin && $priceMin > $priceBoundMin) ? $priceMin : null;
+        $effectiveMax = ($priceBoundMax > $priceBoundMin && $priceMax > 0 && $priceMax < $priceBoundMax) ? $priceMax : null;
 
-        if ($categoryIds !== []) {
-            $query->whereHas('categories', fn ($categoryQuery) => $categoryQuery->whereIn('categories.id', $categoryIds));
-        }
-
-        if ($search !== '') {
-            $query->where(function ($searchQuery) use ($search) {
-                $searchQuery->where('name', 'like', "%{$search}%")
-                    ->orWhere('short_description', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('sku', 'like', "%{$search}%");
-            });
-        }
-
-        if ($priceBoundMax > $priceBoundMin && $priceMin > $priceBoundMin) {
-            $query->where('price', '>=', $priceMin);
-        }
-
-        if ($priceBoundMax > $priceBoundMin && $priceMax > 0 && $priceMax < $priceBoundMax) {
-            $query->where('price', '<=', $priceMax);
-        }
-
-        match ($sort) {
-            'price_asc' => $query->orderBy('price')->orderBy('name'),
-            'price_desc' => $query->orderByDesc('price')->orderBy('name'),
-            'name' => $query->orderBy('name'),
-            default => $query->orderByDesc('id'),
-        };
-
-        return $query->paginate($perPage);
+        return $this->searchService->search(
+            categoryIds: $categoryIds,
+            search: $search,
+            priceMin: $effectiveMin,
+            priceMax: $effectiveMax,
+            sort: $sort,
+            perPage: $perPage,
+            page: Paginator::resolveCurrentPage('page'),
+        );
     }
 
     /**
