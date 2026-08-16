@@ -17,30 +17,36 @@
                     <div class="checkout-card card border-0 shadow-sm p-4 mb-4">
                         <h2 class="h5 mb-3">Контактные данные</h2>
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Имя и фамилия</label>
-                                <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror">
-                                @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Телефон</label>
-                                <input type="tel" wire:model="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="+7 (___) ___-__-__">
-                                @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email</label>
-                                <input type="email" wire:model="email" class="form-control @error('email') is-invalid @enderror" @if(auth()->check()) readonly @endif>
-                                @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                @auth
-                                    <div class="form-text">Заказ будет оформлен на ваш аккаунт.</div>
-                                @else
-                                    <div class="form-text">
-                                        Если аккаунта с этим email ещё нет, мы создадим его и вышлем пароль на почту.
-                                        Уже зарегистрированы? <a href="{{ route('login') }}">Войдите</a>, чтобы оформить заказ на свой аккаунт.
-                                    </div>
-                                @endauth
-                            </div>
+                        <div class="checkout-field mb-3">
+                            <label class="form-label">Имя и фамилия</label>
+                            <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror">
+                            @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="checkout-field mb-3">
+                            <label class="form-label">Телефон</label>
+                            <input type="tel"
+                                   wire:model="phone"
+                                   class="form-control js-phone-input @error('phone') is-invalid @enderror"
+                                   placeholder="+7 (___) ___-__-__"
+                                   inputmode="tel"
+                                   autocomplete="tel"
+                                   maxlength="18">
+                            @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="checkout-field">
+                            <label class="form-label">Email</label>
+                            <input type="email" wire:model="email" class="form-control @error('email') is-invalid @enderror" @if(auth()->check()) readonly @endif>
+                            @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            @auth
+                                <div class="form-text">Заказ будет оформлен на ваш аккаунт.</div>
+                            @else
+                                <div class="form-text">
+                                    Если аккаунта с этим email ещё нет, мы создадим его и вышлем пароль на почту.
+                                    Уже зарегистрированы? <a href="{{ route('login') }}">Войдите</a>, чтобы оформить заказ на свой аккаунт.
+                                </div>
+                            @endauth
                         </div>
                     </div>
 
@@ -55,18 +61,26 @@
 
                         <div class="checkout-delivery-options">
                             @forelse($deliveryOptions as $option)
-                                <label class="checkout-delivery-option d-flex align-items-center gap-3 p-3 mb-2 border rounded {{ (int) $deliveryMethodId === $option['method']->id ? 'checkout-delivery-option--active' : '' }}">
+                                <label class="checkout-delivery-option d-flex align-items-center gap-3 p-3 mb-2 border rounded
+                                    {{ (int) $deliveryMethodId === $option['method']->id ? 'checkout-delivery-option--active' : '' }}
+                                    {{ ! $option['available'] ? 'checkout-delivery-option--disabled' : '' }}">
                                     <input type="radio"
                                            class="form-check-input mt-0"
                                            wire:model.live="deliveryMethodId"
-                                           value="{{ $option['method']->id }}">
+                                           value="{{ $option['method']->id }}"
+                                           @disabled(! $option['available'])>
                                     <span class="flex-grow-1">
                                         <span class="d-block fw-semibold">{{ $option['method']->name }}</span>
                                         @if($option['method']->description)
                                             <span class="d-block text-muted small">{{ $option['method']->description }}</span>
                                         @endif
+                                        @unless($option['available'])
+                                            <span class="d-block text-danger small">Недоступно для вашего заказа</span>
+                                        @endunless
                                     </span>
-                                    <span class="fw-semibold">{{ number_format($option['price'], 0, ',', ' ') }} ₽</span>
+                                    <span class="fw-semibold">
+                                        {{ $option['available'] ? number_format($option['price'], 0, ',', ' ').' ₽' : '—' }}
+                                    </span>
                                 </label>
                             @empty
                                 <div class="alert alert-warning mb-0">

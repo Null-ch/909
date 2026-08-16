@@ -4,6 +4,7 @@ import * as bootstrap from 'bootstrap';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import './front-confirm.js';
+import './phone-mask.js';
 
 window.bootstrap = bootstrap;
 window.Swiper = Swiper;

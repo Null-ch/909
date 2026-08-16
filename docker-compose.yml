@@ -11,6 +11,8 @@ services:
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
       - app-vendor:/var/www/html/vendor
       - app-node-modules:/var/www/html/node_modules
+      - app-storage-framework:/var/www/html/storage/framework
+      - app-bootstrap-cache:/var/www/html/bootstrap/cache
     networks:
       - laravel
     depends_on:
@@ -72,4 +74,8 @@ volumes:
   app-vendor:
     driver: local
   app-node-modules:
+    driver: local
+  app-storage-framework:
+    driver: local
+  app-bootstrap-cache:
     driver: local

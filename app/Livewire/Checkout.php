@@ -7,6 +7,7 @@ use App\Services\AccountService;
 use App\Services\CartService;
 use App\Services\DeliveryCalculatorService;
 use App\Services\OrderService;
+use App\Support\PhoneNumber;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -43,7 +44,10 @@ class Checkout extends Component
             $this->phone = (string) $user->phone;
         }
 
-        $cheapest = $this->deliveryOptions($cartService, $deliveryCalculatorService)->sortBy('price')->first();
+        $cheapest = $this->deliveryOptions($cartService, $deliveryCalculatorService)
+            ->where('available', true)
+            ->sortBy('price')
+            ->first();
         $this->deliveryMethodId = $cheapest['method']->id ?? null;
     }
 
@@ -54,6 +58,7 @@ class Checkout extends Component
         AccountService $accountService,
     ): void {
         $this->errorMessage = null;
+        $this->phone = PhoneNumber::normalize($this->phone) ?? '';
         $this->validate();
 
         $cartItems = $cartService->getCurrentItems();
@@ -67,7 +72,7 @@ class Checkout extends Component
         $delivery = $this->deliveryOptions($cartService, $deliveryCalculatorService, $cartItems)
             ->first(fn ($option) => $option['method']->id === $this->deliveryMethodId);
 
-        if (! $delivery) {
+        if (! $delivery || ! $delivery['available']) {
             $this->addError('deliveryMethodId', 'Выберите способ доставки.');
 
             return;
@@ -141,7 +146,7 @@ class Checkout extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:32'],
+            'phone' => ['required', 'string', 'max:32', 'regex:/^\+7\d{10}$/'],
             'email' => ['required', 'email', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
             'comment' => ['nullable', 'string', 'max:1000'],
@@ -157,6 +162,13 @@ class Checkout extends Component
             'email' => 'email',
             'address' => 'адрес доставки',
             'deliveryMethodId' => 'способ доставки',
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'phone.regex' => 'Укажите телефон в формате +7 (___) ___-__-__.',
         ];
     }
 

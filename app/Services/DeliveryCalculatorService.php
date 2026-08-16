@@ -11,7 +11,7 @@ class DeliveryCalculatorService
 {
     /**
      * @param  iterable<int, array{product: Product, quantity: int}>  $items
-     * @return Collection<int, array{method: DeliveryMethod, rate: DeliveryRate, price: float, label: string}>
+     * @return Collection<int, array{method: DeliveryMethod, rate: ?DeliveryRate, price: ?float, available: bool, label: string}>
      */
     public function calculateForItems(iterable $items): Collection
     {
@@ -25,18 +25,16 @@ class DeliveryCalculatorService
             ->map(function (DeliveryMethod $method) use ($metrics) {
                 $rate = $this->findMatchingRate($method->activeRates, $metrics);
 
-                if (! $rate) {
-                    return null;
-                }
-
                 return [
                     'method' => $method,
                     'rate' => $rate,
-                    'price' => (float) $rate->price,
-                    'label' => $method->name.' — '.number_format((float) $rate->price, 2, '.', ' ').' ₽',
+                    'price' => $rate ? (float) $rate->price : null,
+                    'available' => $rate !== null,
+                    'label' => $rate
+                        ? $method->name.' — '.number_format((float) $rate->price, 2, '.', ' ').' ₽'
+                        : $method->name.' — недоступно для этого заказа',
                 ];
             })
-            ->filter()
             ->values();
     }
 
@@ -46,6 +44,7 @@ class DeliveryCalculatorService
     public function calculateCheapest(iterable $items): ?array
     {
         return $this->calculateForItems($items)
+            ->where('available', true)
             ->sortBy('price')
             ->first();
     }

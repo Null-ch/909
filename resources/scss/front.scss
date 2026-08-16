@@ -60,8 +60,13 @@ body.site-body {
     box-shadow: $box-shadow-sm;
 }
 
+.site-logo {
+    min-width: 0;
+}
+
 .site-logo__image {
     max-height: 52px;
+    max-width: 100%;
     width: auto;
 }
 
@@ -70,6 +75,17 @@ body.site-body {
     font-weight: 700;
     color: $secondary;
     letter-spacing: -0.01em;
+}
+
+@media (max-width: 374.98px) {
+    .site-header__toggle {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
+    .site-logo__text {
+        font-size: 1.15rem;
+    }
 }
 
 .site-search__input {
@@ -863,6 +879,7 @@ body.site-body {
 .checkout-delivery-option {
     cursor: pointer;
     transition: border-color 0.2s ease, background-color 0.2s ease;
+    flex-wrap: wrap;
 
     &:hover {
         border-color: $primary !important;
@@ -872,11 +889,31 @@ body.site-body {
         border-color: $primary !important;
         background: rgba($primary, 0.06);
     }
+
+    &--disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background: $gray-100;
+
+        &:hover {
+            border-color: $border-color !important;
+        }
+    }
 }
 
 .checkout-summary__items {
     max-height: 220px;
     overflow-y: auto;
+}
+
+@media (max-width: 767.98px) {
+    .checkout-card {
+        padding: 1.25rem !important;
+    }
+
+    .checkout-delivery-option {
+        align-items: flex-start;
+    }
 }
 
 // Заказ оформлен

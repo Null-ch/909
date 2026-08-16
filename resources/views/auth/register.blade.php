@@ -31,7 +31,14 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Телефон <span class="text-muted">(необязательно)</span></label>
-                                    <input type="tel" name="phone" value="{{ old('phone') }}" class="form-control @error('phone') is-invalid @enderror">
+                                    <input type="tel"
+                                           name="phone"
+                                           value="{{ old('phone') }}"
+                                           class="form-control js-phone-input @error('phone') is-invalid @enderror"
+                                           placeholder="+7 (___) ___-__-__"
+                                           inputmode="tel"
+                                           autocomplete="tel"
+                                           maxlength="18">
                                     @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>

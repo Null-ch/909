@@ -53,6 +53,9 @@ bootstrap_once() {
 
 mkdir -p .docker
 
+mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/logs bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+
 php artisan storage:link --force --no-interaction 2>/dev/null || true
 
 if [ ! -f ".docker/bootstrapped" ]; then

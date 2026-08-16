@@ -50,20 +50,18 @@
 
 <header class="site-header">
     <div class="container">
-        <div class="row align-items-center g-3 py-3">
-            <div class="col-lg-3 col-md-4 col-8">
-                <a href="{{ url('/') }}" class="site-logo d-inline-flex align-items-center text-decoration-none">
-                    @if($logoUrl)
-                        <img src="{{ $logoUrl }}" alt="{{ $shopName }}" class="site-logo__image">
-                    @else
-                        <span class="site-logo__text">
-                            <i class="fa-solid fa-leaf me-2"></i>{{ $shopName }}
-                        </span>
-                    @endif
-                </a>
-            </div>
+        <div class="d-flex align-items-center justify-content-between gap-2 gap-lg-3 py-3">
+            <a href="{{ url('/') }}" class="site-logo d-inline-flex align-items-center text-decoration-none flex-shrink-1 text-truncate">
+                @if($logoUrl)
+                    <img src="{{ $logoUrl }}" alt="{{ $shopName }}" class="site-logo__image">
+                @else
+                    <span class="site-logo__text text-truncate">
+                        <i class="fa-solid fa-leaf me-2"></i>{{ $shopName }}
+                    </span>
+                @endif
+            </a>
 
-            <div class="col-lg-6 d-none d-lg-block">
+            <div class="d-none d-lg-block flex-grow-1">
                 <form action="{{ url('/search') }}" method="GET" class="site-search" role="search">
                     <div class="input-group">
                         <input type="search"
@@ -79,27 +77,25 @@
                 </form>
             </div>
 
-            <div class="col-lg-3 col-md-8 col-4">
-                <div class="d-flex align-items-center justify-content-end gap-2 gap-md-3">
-                    <button type="button"
-                            class="btn btn-outline-secondary d-lg-none site-header__toggle"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#siteMobileSearch"
-                            aria-expanded="false"
-                            aria-controls="siteMobileSearch">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+            <div class="d-flex align-items-center flex-shrink-0 gap-2 gap-md-3">
+                <button type="button"
+                        class="btn btn-outline-secondary d-lg-none site-header__toggle"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#siteMobileSearch"
+                        aria-expanded="false"
+                        aria-controls="siteMobileSearch">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
 
-                    <livewire:cart-icon />
+                <livewire:cart-icon />
 
-                    <button type="button"
-                            class="btn btn-outline-secondary d-lg-none site-header__toggle"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#siteMobileMenu"
-                            aria-controls="siteMobileMenu">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                </div>
+                <button type="button"
+                        class="btn btn-outline-secondary d-lg-none site-header__toggle"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#siteMobileMenu"
+                        aria-controls="siteMobileMenu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
 
