@@ -12,8 +12,6 @@ class AddToCart extends Component
 
     public int $quantity = 1;
 
-    public ?string $successMessage = null;
-
     public function mount(Product $product): void
     {
         $this->product = $product;
@@ -37,7 +35,7 @@ class AddToCart extends Component
     {
         $cartService->addItem($this->product, $this->quantity);
         $this->dispatch('cart-updated');
-        $this->successMessage = 'Товар добавлен в корзину';
+        $this->dispatch('cart-item-added', message: 'Товар добавлен в корзину');
     }
 
     public function render()

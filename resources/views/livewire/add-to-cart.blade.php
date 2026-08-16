@@ -31,10 +31,4 @@
         <i class="fa-solid fa-cart-plus me-2"></i>
         {{ $product->quantity > 0 ? 'В корзину' : 'Нет в наличии' }}
     </button>
-
-    @if($successMessage)
-        <div class="alert alert-success mt-3 mb-0 py-2 small">
-            <i class="fa-solid fa-check-circle me-1"></i>{{ $successMessage }}
-        </div>
-    @endif
 </div>

@@ -20,7 +20,6 @@ class CategorySeeder extends Seeder
         ]);
 
         Category::query()->create([
-            'parent_id' => $roll->id,
             'name' => 'Спортивные газоны',
             'slug' => 'sport-gazon',
             'description' => 'Износостойкие покрытия для спортивных площадок.',
@@ -29,7 +28,6 @@ class CategorySeeder extends Seeder
         ]);
 
         Category::query()->create([
-            'parent_id' => $roll->id,
             'name' => 'Декоративные газоны',
             'slug' => 'decor-gazon',
             'description' => 'Газоны для частных участков и парков.',

@@ -110,7 +110,7 @@
     </div>
     <div class="card-body" id="delivery-rates" data-rates-container>
         @foreach ($rates as $index => $rate)
-            <div class="delivery-rate-row" data-rate-row style="border:1px solid var(--border-color-light);border-radius:var(--radius);padding:16px;margin-bottom:12px">
+            <div class="delivery-rate-row" data-rate-row>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Название тарифа</label>
@@ -166,7 +166,7 @@
 </div>
 
 <template id="delivery-rate-template">
-    <div class="delivery-rate-row" data-rate-row style="border:1px solid var(--border-color-light);border-radius:var(--radius);padding:16px;margin-bottom:12px">
+    <div class="delivery-rate-row" data-rate-row>
         <div class="form-row">
             <div class="form-group">
                 <label class="form-label">Название тарифа</label>

@@ -34,6 +34,17 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                // Bootstrap 5 and Swiper's own stylesheets still use the legacy
+                // @import API internally, so these warnings come from vendor code
+                // we don't control, not from our own SCSS.
+                silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
+                quietDeps: true,
+            },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

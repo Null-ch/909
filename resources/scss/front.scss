@@ -83,6 +83,10 @@ body.site-body {
         height: 2.25rem;
     }
 
+    .site-cart__toggle {
+        height: 2.25rem;
+    }
+
     .site-logo__text {
         font-size: 1.15rem;
     }
@@ -119,6 +123,12 @@ body.site-body {
     display: inline-flex;
     align-items: center;
     white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+    .site-cart__toggle {
+        height: 2.75rem;
+    }
 }
 
 .site-cart__badge {

@@ -14,6 +14,7 @@ class ProductCard extends Component
     {
         $cartService->addItem($this->product, 1);
         $this->dispatch('cart-updated');
+        $this->dispatch('cart-item-added', message: 'Товар добавлен в корзину');
     }
 
     public function render()

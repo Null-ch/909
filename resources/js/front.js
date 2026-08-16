@@ -19,4 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#front-toast-container .toast').forEach((el) => {
         new bootstrap.Toast(el).show();
     });
+
+    // Уведомление о добавлении товара в корзину (событие из Livewire-компонента AddToCart).
+    const cartToastEl = document.getElementById('cart-toast');
+    if (cartToastEl) {
+        const cartToast = new bootstrap.Toast(cartToastEl);
+        const cartToastBody = document.getElementById('cart-toast-body');
+
+        window.addEventListener('cart-item-added', (event) => {
+            const detail = event.detail ?? {};
+            cartToastBody.textContent = detail.message ?? detail[0] ?? 'Товар добавлен в корзину';
+            cartToast.show();
+        });
+    }
 });

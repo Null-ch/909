@@ -1,7 +1,7 @@
-<div class="site-cart" x-data="{ open: false }" @click.outside="open = false">
+<div class="site-cart" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @click.outside="open = false">
     <a href="{{ url('/cart') }}"
        class="site-cart__toggle btn btn-outline-primary position-relative"
-       @mouseenter="open = true"
+       @mouseenter="if (hoverable) open = true"
        @click.prevent="open = !open">
         <i class="fa-solid fa-cart-shopping"></i>
         @if($itemsCount > 0)
@@ -13,8 +13,8 @@
     <div class="site-cart__dropdown"
          x-show="open"
          x-transition
-         @mouseenter="open = true"
-         @mouseleave="open = false"
+         @mouseenter="if (hoverable) open = true"
+         @mouseleave="if (hoverable) open = false"
          style="display: none;">
         <div class="site-cart__dropdown-header">Корзина</div>
         <div class="site-cart__dropdown-body">

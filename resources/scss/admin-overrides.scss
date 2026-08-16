@@ -116,3 +116,18 @@
 .image-dropzone-multi .image-dropzone-empty {
     display: flex;
 }
+
+// ────────────────────────
+//  DELIVERY RATE RANGES
+// ────────────────────────
+.delivery-rate-row {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    background: var(--bg-surface-secondary);
+    box-shadow: var(--shadow);
+}
+
+.delivery-rate-row + .delivery-rate-row {
+    margin-top: var(--space-4);
+}
