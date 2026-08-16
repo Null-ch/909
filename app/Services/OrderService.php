@@ -4,9 +4,14 @@ namespace App\Services;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Models\Cart;
+use App\Models\DeliveryMethod;
+use App\Models\DeliveryRate;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -99,6 +104,65 @@ class OrderService
             'recordsFiltered' => $recordsFiltered,
             'data' => $orders->map(fn (Order $order) => $this->formatDatatableRow($order))->all(),
         ];
+    }
+
+    /**
+     * @param  array{name: string, phone: string, email: ?string, address: string, comment: ?string}  $customer
+     * @param  Collection<int, Cart>  $cartItems
+     */
+    public function createFromCart(
+        array $customer,
+        DeliveryMethod $deliveryMethod,
+        DeliveryRate $rate,
+        Collection $cartItems,
+    ): Order {
+        return DB::transaction(function () use ($customer, $deliveryMethod, $rate, $cartItems) {
+            foreach ($cartItems as $cartItem) {
+                $product = $cartItem->product;
+
+                if (! $product || $product->quantity < $cartItem->quantity) {
+                    $name = $product->name ?? "Товар #{$cartItem->product_id}";
+
+                    throw new RuntimeException("Товара «{$name}» больше нет в наличии в нужном количестве.");
+                }
+            }
+
+            $itemsTotal = $cartItems->sum(fn (Cart $cartItem) => (float) $cartItem->price * $cartItem->quantity);
+
+            $order = Order::query()->create([
+                'user_id' => Auth::id(),
+                'order_number' => self::generateOrderNumber(),
+                'total_price' => $itemsTotal,
+                'delivery_price' => $rate->price,
+                'customer_name' => $customer['name'],
+                'customer_phone' => $customer['phone'],
+                'customer_email' => $customer['email'] ?: null,
+                'delivery_address' => $customer['address'],
+                'comment' => $customer['comment'] ?: null,
+                'delivery_method_id' => $deliveryMethod->id,
+            ]);
+
+            foreach ($cartItems as $cartItem) {
+                $order->items()->create([
+                    'product_id' => $cartItem->product_id,
+                    'product_name' => $cartItem->product->name,
+                    'sku' => $cartItem->product->sku,
+                    'price' => $cartItem->price,
+                    'quantity' => $cartItem->quantity,
+                    'total' => (float) $cartItem->price * $cartItem->quantity,
+                ]);
+            }
+
+            $this->activityLogService->log(
+                action: 'created',
+                entityType: 'Order',
+                entityId: $order->id,
+                description: "Оформлен заказ {$order->order_number} на сумму {$order->grandTotal()} ₽",
+                properties: ['order_number' => $order->order_number],
+            );
+
+            return $order->fresh(['items', 'deliveryMethod']);
+        });
     }
 
     public function updateOrder(Order $order, OrderStatus $status, PaymentStatus $paymentStatus): Order

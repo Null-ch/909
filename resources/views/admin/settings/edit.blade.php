@@ -21,7 +21,7 @@
         <div class="card-header">
             <div>
                 <div class="card-title">Параметры сайта</div>
-                <div class="card-subtitle">Общие данные, контакты и SEO без правки кода.</div>
+                <div class="card-subtitle">Общие данные, оформление, контакты и SEO без правки кода.</div>
             </div>
         </div>
         <div class="card-body">
@@ -81,7 +81,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom:0">
                             <label class="form-label" for="footer_text">Текст в футере</label>
                             <textarea
                                 id="footer_text"
@@ -89,125 +89,135 @@
                                 class="form-control @error('footer_text') is-invalid @enderror"
                                 rows="2"
                             >{{ old('footer_text', $settingsValues['footer_text']) }}</textarea>
+                            <div class="form-help">Отображается в нижней части сайта, под основным блоком футера.</div>
                             @error('footer_text')
                                 <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
                             @enderror
                         </div>
+                    </div>
 
+                    <div class="settings-tab-panel" data-tab-panel="logo" role="tabpanel">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="logo">Логотип</label>
-                                <input
-                                    type="file"
-                                    id="logo"
-                                    name="logo"
-                                    class="form-control @error('logo') is-invalid @enderror"
-                                    accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
-                                    data-image-preview="logo-preview"
-                                >
-                                <div class="form-help">Рекомендуемый размер: до 400×200 px.</div>
+                                <div class="image-dropzone" data-image-dropzone>
+                                    <input
+                                        type="file"
+                                        id="logo"
+                                        name="logo"
+                                        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                                    >
+                                    <div class="image-dropzone-preview" data-dropzone-preview>
+                                        @if ($settingsValues['logo'])
+                                            <img src="{{ asset('storage/'.$settingsValues['logo']) }}" alt="Логотип">
+                                        @endif
+                                    </div>
+                                    <div class="image-dropzone-empty">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                            <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <p style="margin:0">Перетащите логотип сюда или</p>
+                                        <button type="button" class="btn btn-outline btn-sm" data-dropzone-browse>Выбрать файл</button>
+                                    </div>
+                                    <button type="button" class="image-dropzone-remove" data-dropzone-remove aria-label="Убрать логотип">×</button>
+                                </div>
+                                <div class="form-help">Рекомендуемый размер: до 400×200 px. Используется в шапке и футере сайта.</div>
                                 @error('logo')
                                     <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
                                 @enderror
-                                <div id="logo-preview" style="margin-top:12px">
-                                    @if ($settingsValues['logo'])
-                                        <img
-                                            src="{{ asset('storage/'.$settingsValues['logo']) }}"
-                                            alt="Логотип"
-                                            style="max-width:240px;border-radius:var(--radius);border:1px solid var(--border-color-light)"
-                                        >
-                                    @endif
-                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="favicon">Favicon</label>
-                                <input
-                                    type="file"
-                                    id="favicon"
-                                    name="favicon"
-                                    class="form-control @error('favicon') is-invalid @enderror"
-                                    accept="image/jpeg,image/png,image/webp,image/gif,image/x-icon"
-                                    data-image-preview="favicon-preview"
-                                >
+                                <div class="image-dropzone" data-image-dropzone>
+                                    <input
+                                        type="file"
+                                        id="favicon"
+                                        name="favicon"
+                                        accept="image/jpeg,image/png,image/webp,image/gif,image/x-icon"
+                                    >
+                                    <div class="image-dropzone-preview" data-dropzone-preview>
+                                        @if ($settingsValues['favicon'])
+                                            <img src="{{ asset('storage/'.$settingsValues['favicon']) }}" alt="Favicon">
+                                        @endif
+                                    </div>
+                                    <div class="image-dropzone-empty">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                            <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <p style="margin:0">Перетащите favicon сюда или</p>
+                                        <button type="button" class="btn btn-outline btn-sm" data-dropzone-browse>Выбрать файл</button>
+                                    </div>
+                                    <button type="button" class="image-dropzone-remove" data-dropzone-remove aria-label="Убрать favicon">×</button>
+                                </div>
                                 <div class="form-help">Рекомендуемый размер: 64×64 px.</div>
                                 @error('favicon')
                                     <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
                                 @enderror
-                                <div id="favicon-preview" style="margin-top:12px">
-                                    @if ($settingsValues['favicon'])
-                                        <img
-                                            src="{{ asset('storage/'.$settingsValues['favicon']) }}"
-                                            alt="Favicon"
-                                            style="max-width:64px;border-radius:var(--radius);border:1px solid var(--border-color-light)"
-                                        >
-                                    @endif
-                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="card" style="margin-top: var(--gap);">
-                            <div class="card-header">
-                                <div class="card-title">Социальные сети</div>
+                    <div class="settings-tab-panel" data-tab-panel="social" role="tabpanel">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="social_vk">ВКонтакте</label>
+                                <input
+                                    type="url"
+                                    id="social_vk"
+                                    name="social_vk"
+                                    class="form-control @error('social_vk') is-invalid @enderror"
+                                    value="{{ old('social_vk', $settingsValues['social_vk']) }}"
+                                    placeholder="https://vk.com/..."
+                                >
+                                @error('social_vk')
+                                    <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <div class="card-body">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label" for="social_vk">ВКонтакте</label>
-                                        <input
-                                            type="url"
-                                            id="social_vk"
-                                            name="social_vk"
-                                            class="form-control @error('social_vk') is-invalid @enderror"
-                                            value="{{ old('social_vk', $settingsValues['social_vk']) }}"
-                                            placeholder="https://vk.com/..."
-                                        >
-                                        @error('social_vk')
-                                            <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label" for="social_telegram">Telegram</label>
-                                        <input
-                                            type="url"
-                                            id="social_telegram"
-                                            name="social_telegram"
-                                            class="form-control @error('social_telegram') is-invalid @enderror"
-                                            value="{{ old('social_telegram', $settingsValues['social_telegram']) }}"
-                                            placeholder="https://t.me/..."
-                                        >
-                                        @error('social_telegram')
-                                            <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="social_whatsapp">WhatsApp</label>
-                                    <input
-                                        type="url"
-                                        id="social_whatsapp"
-                                        name="social_whatsapp"
-                                        class="form-control @error('social_whatsapp') is-invalid @enderror"
-                                        value="{{ old('social_whatsapp', $settingsValues['social_whatsapp']) }}"
-                                        placeholder="https://wa.me/..."
-                                    >
-                                    @error('social_whatsapp')
-                                        <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label" for="social_telegram">Telegram</label>
+                                <input
+                                    type="url"
+                                    id="social_telegram"
+                                    name="social_telegram"
+                                    class="form-control @error('social_telegram') is-invalid @enderror"
+                                    value="{{ old('social_telegram', $settingsValues['social_telegram']) }}"
+                                    placeholder="https://t.me/..."
+                                >
+                                @error('social_telegram')
+                                    <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
+                        <div class="form-group" style="margin-bottom:0">
+                            <label class="form-label" for="social_whatsapp">WhatsApp</label>
+                            <input
+                                type="url"
+                                id="social_whatsapp"
+                                name="social_whatsapp"
+                                class="form-control @error('social_whatsapp') is-invalid @enderror"
+                                value="{{ old('social_whatsapp', $settingsValues['social_whatsapp']) }}"
+                                placeholder="https://wa.me/..."
+                            >
+                            @error('social_whatsapp')
+                                <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
-                        <div class="form-group" style="margin-top: var(--gap);">
+                    <div class="settings-tab-panel" data-tab-panel="benefits" role="tabpanel">
+                        <div class="form-group" style="margin-bottom:0">
                             <label class="form-label" for="benefits">Карусель преимуществ (JSON)</label>
                             <textarea
                                 id="benefits"
                                 name="benefits"
                                 class="form-control @error('benefits') is-invalid @enderror"
-                                rows="8"
+                                rows="10"
                                 style="font-family: monospace; font-size: 13px;"
                             >{{ old('benefits', $settingsValues['benefits']) }}</textarea>
-                            <div class="form-help">Массив объектов: icon, title, text.</div>
+                            <div class="form-help">Массив объектов: icon, title, text. Отображается блоком преимуществ на главной странице.</div>
                             @error('benefits')
                                 <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
                             @enderror
@@ -257,7 +267,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom:0">
                             <label class="form-label" for="contact_map_iframe">Карта (iframe-код)</label>
                             <textarea
                                 id="contact_map_iframe"
@@ -268,6 +278,46 @@
                             >{{ old('contact_map_iframe', $settingsValues['contact_map_iframe']) }}</textarea>
                             <div class="form-help">Вставьте HTML-код iframe из Яндекс.Карт или Google Maps.</div>
                             @error('contact_map_iframe')
+                                <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="settings-tab-panel" data-tab-panel="home" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label" for="seo_home_title">Meta Title главной страницы</label>
+                            <input
+                                type="text"
+                                id="seo_home_title"
+                                name="seo_home_title"
+                                class="form-control @error('seo_home_title') is-invalid @enderror"
+                                value="{{ old('seo_home_title', $settingsValues['seo_home_title']) }}"
+                            >
+                            @error('seo_home_title')
+                                <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="seo_home_description">Meta Description главной страницы</label>
+                            <textarea
+                                id="seo_home_description"
+                                name="seo_home_description"
+                                class="form-control @error('seo_home_description') is-invalid @enderror"
+                                rows="3"
+                            >{{ old('seo_home_description', $settingsValues['seo_home_description']) }}</textarea>
+                            @error('seo_home_description')
+                                <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:0">
+                            <label class="form-label" for="seo_home_text">SEO-текст на главной</label>
+                            <div class="rich-text" data-rich-text>
+                                <textarea id="seo_home_text" name="seo_home_text" hidden>{{ old('seo_home_text', $settingsValues['seo_home_text']) }}</textarea>
+                            </div>
+                            <div class="form-help">Отображается отдельным блоком в конце главной страницы.</div>
+                            @error('seo_home_text')
                                 <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
                             @enderror
                         </div>
@@ -301,7 +351,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom:0">
                             <label class="form-label" for="seo_meta_description">Глобальный Meta Description</label>
                             <textarea
                                 id="seo_meta_description"

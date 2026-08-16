@@ -17,13 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.guard' => \App\Http\Middleware\UseAdminGuard::class,
         ]);
 
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
         $middleware->redirectGuestsTo(fn (Request $request) => $request->is('admin') || $request->is('admin/*')
             ? route('admin.login')
-            : '/');
+            : route('login'));
 
         $middleware->redirectUsersTo(fn (Request $request) => $request->is('admin/login')
             ? route('admin.dashboard')
-            : '/');
+            : route('account.dashboard'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

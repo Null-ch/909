@@ -15,14 +15,7 @@ class CartService
      */
     public function getCurrentItems(): Collection
     {
-        return Cart::query()
-            ->with('product')
-            ->when(
-                Auth::check(),
-                fn ($query) => $query->where('user_id', Auth::id()),
-                fn ($query) => $query->where('session_id', session()->getId()),
-            )
-            ->get();
+        return $this->ownedItemQuery()->with('product')->get();
     }
 
     public function getItemsCount(): int
@@ -41,12 +34,7 @@ class CartService
         $maxQuantity = max(1, (int) $product->quantity);
         $quantity = min($quantity, $maxQuantity);
 
-        $cartItem = Cart::query()
-            ->when(
-                Auth::check(),
-                fn ($query) => $query->where('user_id', Auth::id()),
-                fn ($query) => $query->where('session_id', session()->getId()),
-            )
+        $cartItem = $this->ownedItemQuery()
             ->where('product_id', $product->id)
             ->first();
 
@@ -67,6 +55,28 @@ class CartService
             'quantity' => $quantity,
             'price' => $product->price,
         ]);
+    }
+
+    public function updateQuantity(int $cartItemId, int $quantity): void
+    {
+        $cartItem = $this->ownedItemQuery()->with('product')->find($cartItemId);
+
+        if (! $cartItem) {
+            return;
+        }
+
+        $maxQuantity = max(1, (int) $cartItem->product->quantity);
+        $cartItem->update(['quantity' => max(1, min($quantity, $maxQuantity))]);
+    }
+
+    public function removeItem(int $cartItemId): void
+    {
+        $this->ownedItemQuery()->where('id', $cartItemId)->delete();
+    }
+
+    public function clear(): void
+    {
+        $this->ownedItemQuery()->delete();
     }
 
     /**
@@ -109,5 +119,14 @@ class CartService
                 ];
             })
             ->values();
+    }
+
+    private function ownedItemQuery()
+    {
+        return Cart::query()->when(
+            Auth::check(),
+            fn ($query) => $query->where('user_id', Auth::id()),
+            fn ($query) => $query->where('session_id', session()->getId()),
+        );
     }
 }

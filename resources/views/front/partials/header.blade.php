@@ -34,9 +34,15 @@
                     @endif
                 </div>
 
-                <a href="{{ url('/account') }}" class="site-topbar__link d-none d-sm-inline-flex align-items-center">
-                    <i class="fa-solid fa-user me-1"></i>Личный кабинет
-                </a>
+                @auth
+                    <a href="{{ route('account.dashboard') }}" class="site-topbar__link d-none d-sm-inline-flex align-items-center">
+                        <i class="fa-solid fa-user me-1"></i>Личный кабинет
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="site-topbar__link d-none d-sm-inline-flex align-items-center">
+                        <i class="fa-solid fa-user me-1"></i>Войти
+                    </a>
+                @endauth
             </div>
         </div>
     </div>

@@ -22,6 +22,7 @@ export default defineConfig({
                 'resources/js/admin-dashboard.js',
                 'resources/js/admin-delivery-methods-index.js',
                 'resources/js/admin-delivery-methods-form.js',
+                'resources/js/admin-banners-form.js',
             ],
             refresh: true,
             fonts: [

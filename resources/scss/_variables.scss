@@ -2,9 +2,29 @@
 $primary: #2d7a2d;
 $secondary: #1b4d1b;
 $success: #28a745;
-$body-bg: #f8f9fa;
-$body-color: #333;
+$body-bg: #f6f8f6;
+$body-color: #33413a;
 $link-color: $primary;
 $link-hover-color: $secondary;
-$border-radius: 0.375rem;
 $font-family-sans-serif: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+// Более мягкая, современная геометрия
+$border-radius-sm: 0.5rem;
+$border-radius: 0.75rem;
+$border-radius-lg: 1rem;
+$border-radius-xl: 1.25rem;
+
+$box-shadow-sm: 0 2px 10px rgba(27, 77, 27, 0.07);
+$box-shadow: 0 12px 32px rgba(27, 77, 27, 0.10);
+$box-shadow-lg: 0 24px 48px rgba(27, 77, 27, 0.14);
+
+$btn-border-radius: 0.6rem;
+$btn-border-radius-lg: 0.75rem;
+$btn-font-weight: 600;
+
+$input-border-radius: 0.6rem;
+$input-border-radius-sm: 0.5rem;
+$input-border-radius-lg: 0.7rem;
+
+$card-border-radius: $border-radius-lg;
+$badge-border-radius: 999px;

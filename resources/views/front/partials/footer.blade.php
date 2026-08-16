@@ -82,9 +82,9 @@
                     {{ $footerText }}
                 </div>
                 <div class="site-footer__bottom-links">
-                    <a href="{{ url('/page/about') }}">О компании</a>
+                    <a href="{{ url('/about') }}">О компании</a>
                     <span class="mx-2">·</span>
-                    <a href="{{ url('/page/delivery') }}">Доставка</a>
+                    <a href="{{ url('/contacts') }}">Контакты</a>
                 </div>
             </div>
         </div>

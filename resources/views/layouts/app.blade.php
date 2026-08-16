@@ -40,6 +40,7 @@
     </main>
 
     @include('front.partials.footer')
+    @include('front.partials.toasts')
 
     @livewireScripts
     @stack('scripts')

@@ -66,18 +66,30 @@ slugSource?.addEventListener('input', () => {
     }
 });
 
+dropzone?.addEventListener('click', (event) => {
+    if (event.target.closest('#gallery-browse-btn')) {
+        return;
+    }
+    imagesInput?.click();
+});
+
+document.getElementById('gallery-browse-btn')?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    imagesInput?.click();
+});
+
 dropzone?.addEventListener('dragover', (event) => {
     event.preventDefault();
-    dropzone.style.borderColor = 'var(--primary)';
+    dropzone.classList.add('is-dragover');
 });
 
 dropzone?.addEventListener('dragleave', () => {
-    dropzone.style.borderColor = 'var(--border-color-light)';
+    dropzone.classList.remove('is-dragover');
 });
 
 dropzone?.addEventListener('drop', (event) => {
     event.preventDefault();
-    dropzone.style.borderColor = 'var(--border-color-light)';
+    dropzone.classList.remove('is-dragover');
     handleNewFiles(event.dataTransfer?.files);
 });
 

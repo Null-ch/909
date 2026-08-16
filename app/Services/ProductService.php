@@ -59,10 +59,11 @@ class ProductService
         $recordsTotal = Product::query()->count();
 
         if ($search !== '') {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('sku', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%");
+            $escaped = Product::escapeLike($search);
+            $query->where(function ($q) use ($escaped) {
+                $q->where('name', 'like', "%{$escaped}%")
+                    ->orWhere('sku', 'like', "%{$escaped}%")
+                    ->orWhere('slug', 'like', "%{$escaped}%");
             });
         }
 

@@ -1,6 +1,8 @@
 import { initFormControls } from 'gentelella/v4/form-controls';
+import { initImageDropzones } from './admin-image-dropzone.js';
 
 initFormControls();
+initImageDropzones();
 
 const tabsRoot = document.querySelector('[data-settings-tabs]');
 
@@ -37,25 +39,3 @@ form?.addEventListener('submit', () => {
     });
 });
 
-document.querySelectorAll('[data-image-preview]').forEach((input) => {
-    const previewId = input.dataset.imagePreview;
-    const preview = previewId ? document.getElementById(previewId) : null;
-
-    if (!preview) {
-        return;
-    }
-
-    input.addEventListener('change', () => {
-        const file = input.files?.[0];
-
-        if (!file) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            preview.innerHTML = `<img src="${event.target?.result}" alt="Предпросмотр" style="max-width:320px;border-radius:var(--radius);border:1px solid var(--border-color-light)">`;
-        };
-        reader.readAsDataURL(file);
-    });
-});

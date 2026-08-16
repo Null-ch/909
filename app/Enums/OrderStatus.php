@@ -31,4 +31,15 @@ enum OrderStatus: string
             self::Cancelled => 'badge-red',
         };
     }
+
+    public function bootstrapBadgeClass(): string
+    {
+        return match ($this) {
+            self::New => 'bg-primary',
+            self::Processing => 'bg-warning text-dark',
+            self::Shipped => 'bg-info text-dark',
+            self::Delivered => 'bg-success',
+            self::Cancelled => 'bg-danger',
+        };
+    }
 }
