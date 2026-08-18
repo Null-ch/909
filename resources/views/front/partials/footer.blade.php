@@ -1,8 +1,13 @@
+@php
+    $hasLegalColumn = $legalName || $legalInn || $legalOgrn || $legalKpp || $legalAddress;
+    $footerColClass = $hasLegalColumn ? 'col-lg-3 col-md-6' : 'col-lg-4 col-md-6';
+@endphp
+
 <footer class="site-footer">
     <div class="site-footer__main">
         <div class="container py-5">
             <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
+                <div class="{{ $footerColClass }}">
                     <div class="site-footer__brand mb-3">
                         @if($logoUrl)
                             <img src="{{ $logoUrl }}" alt="{{ $shopName }}" class="site-footer__logo mb-3">
@@ -17,19 +22,29 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6">
-                    <h6 class="site-footer__heading">Каталог</h6>
+                <div class="{{ $footerColClass }}">
+                    <h6 class="site-footer__heading">Навигация</h6>
                     <ul class="site-footer__links list-unstyled mb-0">
-                        <li><a href="{{ url('/catalog') }}">Все товары</a></li>
-                        @foreach($navCategories->take(5) as $category)
-                            <li>
-                                <a href="{{ url('/category/'.$category->slug) }}">{{ $category->name }}</a>
-                            </li>
-                        @endforeach
+                        <li><a href="{{ url('/catalog') }}">Каталог</a></li>
+                        <li><a href="{{ url('/contacts') }}">Контакты</a></li>
+                        <li><a href="{{ url('/about') }}">О компании</a></li>
                     </ul>
                 </div>
 
-                <div class="col-lg-4 col-md-12">
+                @if($hasLegalColumn)
+                    <div class="{{ $footerColClass }}">
+                        <h6 class="site-footer__heading">Реквизиты</h6>
+                        <ul class="site-footer__legal-list list-unstyled mb-0">
+                            @if($legalName)<li>{{ $legalName }}</li>@endif
+                            @if($legalInn)<li>ИНН {{ $legalInn }}</li>@endif
+                            @if($legalKpp)<li>КПП {{ $legalKpp }}</li>@endif
+                            @if($legalOgrn)<li>ОГРН {{ $legalOgrn }}</li>@endif
+                            @if($legalAddress)<li>{{ $legalAddress }}</li>@endif
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="{{ $footerColClass }}">
                     <h6 class="site-footer__heading">Контакты</h6>
                     <ul class="site-footer__contacts list-unstyled mb-3">
                         @if($contactPhone)
@@ -77,15 +92,8 @@
 
     <div class="site-footer__bottom">
         <div class="container py-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <div class="site-footer__copyright">
-                    {{ $footerText }}
-                </div>
-                <div class="site-footer__bottom-links">
-                    <a href="{{ url('/about') }}">О компании</a>
-                    <span class="mx-2">·</span>
-                    <a href="{{ url('/contacts') }}">Контакты</a>
-                </div>
+            <div class="site-footer__copyright text-center">
+                {{ $footerText }}
             </div>
         </div>
     </div>

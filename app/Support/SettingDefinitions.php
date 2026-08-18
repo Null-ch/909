@@ -72,6 +72,7 @@ class SettingDefinitions
                     ['icon' => 'truck', 'title' => 'Доставка', 'text' => 'Быстрая доставка по региону'],
                     ['icon' => 'shield', 'title' => 'Гарантия', 'text' => 'Качество подтверждено сертификатами'],
                     ['icon' => 'leaf', 'title' => 'Экологичность', 'text' => 'Безопасно для детей и животных'],
+                    ['icon' => 'wallet', 'title' => 'Доступные цены', 'text' => 'Лучшее соотношение цены и качества'],
                 ], JSON_UNESCAPED_UNICODE),
             ],
             'contact_phone' => [
@@ -134,6 +135,36 @@ class SettingDefinitions
                 'label' => 'Глобальный Meta Description',
                 'default' => 'Купить газон с доставкой. Широкий ассортимент, выгодные цены, профессиональная консультация.',
             ],
+            'legal_name' => [
+                'group' => 'legal',
+                'type' => 'text',
+                'label' => 'Полное наименование организации',
+                'default' => null,
+            ],
+            'legal_inn' => [
+                'group' => 'legal',
+                'type' => 'text',
+                'label' => 'ИНН',
+                'default' => null,
+            ],
+            'legal_ogrn' => [
+                'group' => 'legal',
+                'type' => 'text',
+                'label' => 'ОГРН / ОГРНИП',
+                'default' => null,
+            ],
+            'legal_kpp' => [
+                'group' => 'legal',
+                'type' => 'text',
+                'label' => 'КПП',
+                'default' => null,
+            ],
+            'legal_address' => [
+                'group' => 'legal',
+                'type' => 'textarea',
+                'label' => 'Юридический адрес',
+                'default' => null,
+            ],
         ];
     }
 
@@ -150,6 +181,7 @@ class SettingDefinitions
             'contacts' => 'Контакты',
             'home' => 'Главная страница',
             'seo' => 'SEO',
+            'legal' => 'Юридическая информация',
         ];
     }
 }

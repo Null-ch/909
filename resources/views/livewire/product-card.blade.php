@@ -33,9 +33,13 @@
 
         <div class="mt-auto">
             <div class="product-card__price mb-3">
-                <span class="product-card__price-current">{{ number_format($product->price, 0, ',', ' ') }} ₽</span>
-                @if($product->old_price)
-                    <span class="product-card__price-old">{{ number_format($product->old_price, 0, ',', ' ') }} ₽</span>
+                @if($product->hasPrice())
+                    <span class="product-card__price-current">{{ number_format($product->price, 0, ',', ' ') }} ₽</span>
+                    @if($product->old_price)
+                        <span class="product-card__price-old">{{ number_format($product->old_price, 0, ',', ' ') }} ₽</span>
+                    @endif
+                @else
+                    <span class="product-card__price-inquiry">Стоимость уточняйте у менеджера</span>
                 @endif
             </div>
 

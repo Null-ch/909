@@ -29,12 +29,12 @@
                 @csrf
                 @method('PUT')
 
-                <div class="settings-tabs" data-settings-tabs>
-                    <div class="settings-tabs-nav" role="tablist">
+                <div class="admin-tabs" data-admin-tabs>
+                    <div class="admin-tabs-nav" role="tablist">
                         @foreach ($groupLabels as $groupKey => $groupLabel)
                             <button
                                 type="button"
-                                class="settings-tab{{ $loop->first ? ' active' : '' }}"
+                                class="admin-tab{{ $loop->first ? ' active' : '' }}"
                                 role="tab"
                                 data-tab-target="{{ $groupKey }}"
                                 aria-selected="{{ $loop->first ? 'true' : 'false' }}"
@@ -42,7 +42,7 @@
                         @endforeach
                     </div>
 
-                    <div class="settings-tab-panel active" data-tab-panel="general" role="tabpanel">
+                    <div class="admin-tab-panel active" data-tab-panel="general" role="tabpanel">
                         <div class="form-group">
                             <label class="form-label" for="shop_name">Название магазина <span class="required">*</span></label>
                             <input
@@ -96,7 +96,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-tab-panel" data-tab-panel="logo" role="tabpanel">
+                    <div class="admin-tab-panel" data-tab-panel="logo" role="tabpanel">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="logo">Логотип</label>
@@ -160,7 +160,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-tab-panel" data-tab-panel="social" role="tabpanel">
+                    <div class="admin-tab-panel" data-tab-panel="social" role="tabpanel">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="social_vk">ВКонтакте</label>
@@ -207,7 +207,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-tab-panel" data-tab-panel="benefits" role="tabpanel">
+                    <div class="admin-tab-panel" data-tab-panel="benefits" role="tabpanel">
                         <div class="form-group" style="margin-bottom:0">
                             <label class="form-label" for="benefits">Карусель преимуществ (JSON)</label>
                             <textarea
@@ -224,7 +224,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-tab-panel" data-tab-panel="contacts" role="tabpanel">
+                    <div class="admin-tab-panel" data-tab-panel="contacts" role="tabpanel">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="contact_phone">Телефон</label>
@@ -283,7 +283,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-tab-panel" data-tab-panel="home" role="tabpanel">
+                    <div class="admin-tab-panel" data-tab-panel="home" role="tabpanel">
                         <div class="form-group">
                             <label class="form-label" for="seo_home_title">Meta Title главной страницы</label>
                             <input
@@ -323,7 +323,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-tab-panel" data-tab-panel="seo" role="tabpanel">
+                    <div class="admin-tab-panel" data-tab-panel="seo" role="tabpanel">
                         <div class="form-group">
                             <label class="form-label" for="seo_meta_title">Глобальный Meta Title</label>
                             <input
@@ -364,6 +364,82 @@
                             @enderror
                         </div>
                     </div>
+
+                    <div class="admin-tab-panel" data-tab-panel="legal" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label" for="legal_name">Полное наименование организации</label>
+                            <input
+                                type="text"
+                                id="legal_name"
+                                name="legal_name"
+                                class="form-control @error('legal_name') is-invalid @enderror"
+                                value="{{ old('legal_name', $settingsValues['legal_name']) }}"
+                                placeholder="ООО «ГазонМаркет» / ИП Иванов Иван Иванович"
+                            >
+                            @error('legal_name')
+                                <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="legal_inn">ИНН</label>
+                                <input
+                                    type="text"
+                                    id="legal_inn"
+                                    name="legal_inn"
+                                    class="form-control @error('legal_inn') is-invalid @enderror"
+                                    value="{{ old('legal_inn', $settingsValues['legal_inn']) }}"
+                                    placeholder="10 или 12 цифр"
+                                >
+                                @error('legal_inn')
+                                    <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="legal_kpp">КПП</label>
+                                <input
+                                    type="text"
+                                    id="legal_kpp"
+                                    name="legal_kpp"
+                                    class="form-control @error('legal_kpp') is-invalid @enderror"
+                                    value="{{ old('legal_kpp', $settingsValues['legal_kpp']) }}"
+                                    placeholder="9 цифр"
+                                >
+                                @error('legal_kpp')
+                                    <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="legal_ogrn">ОГРН / ОГРНИП</label>
+                                <input
+                                    type="text"
+                                    id="legal_ogrn"
+                                    name="legal_ogrn"
+                                    class="form-control @error('legal_ogrn') is-invalid @enderror"
+                                    value="{{ old('legal_ogrn', $settingsValues['legal_ogrn']) }}"
+                                    placeholder="13 или 15 цифр"
+                                >
+                                @error('legal_ogrn')
+                                    <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:0">
+                            <label class="form-label" for="legal_address">Юридический адрес</label>
+                            <textarea
+                                id="legal_address"
+                                name="legal_address"
+                                class="form-control @error('legal_address') is-invalid @enderror"
+                                rows="2"
+                            >{{ old('legal_address', $settingsValues['legal_address']) }}</textarea>
+                            <div class="form-help">Реквизиты отображаются в футере сайта в соответствии с требованиями законодательства РФ.</div>
+                            @error('legal_address')
+                                <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-actions right" style="margin-top: var(--gap); border-top: 1px solid var(--border-color-light); padding-top: var(--gap);">
@@ -373,41 +449,6 @@
             </form>
         </div>
     </div>
-
-    <style>
-        .settings-tabs-nav {
-            display: flex;
-            gap: 4px;
-            border-bottom: 1px solid var(--border-color-light);
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .settings-tab {
-            padding: 10px 18px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
-            transition: color 0.15s, border-color 0.15s;
-        }
-        .settings-tab:hover {
-            color: var(--text);
-        }
-        .settings-tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-        .settings-tab-panel {
-            display: none;
-        }
-        .settings-tab-panel.active {
-            display: block;
-        }
-    </style>
 @endsection
 
 @push('scripts')

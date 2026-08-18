@@ -13,9 +13,9 @@ class UpdateSettingsRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $nullableUrls = ['social_vk', 'social_telegram', 'social_whatsapp'];
+        $emptyToNullFields = ['social_vk', 'social_telegram', 'social_whatsapp', 'legal_inn', 'legal_ogrn', 'legal_kpp'];
 
-        foreach ($nullableUrls as $field) {
+        foreach ($emptyToNullFields as $field) {
             if ($this->input($field) === '') {
                 $this->merge([$field => null]);
             }
@@ -58,6 +58,11 @@ class UpdateSettingsRequest extends FormRequest
             'seo_meta_title' => ['nullable', 'string', 'max:255'],
             'seo_meta_keywords' => ['nullable', 'string', 'max:1000'],
             'seo_meta_description' => ['nullable', 'string', 'max:1000'],
+            'legal_name' => ['nullable', 'string', 'max:255'],
+            'legal_inn' => ['nullable', 'string', 'max:12', 'regex:/^\d{10}(\d{2})?$/'],
+            'legal_ogrn' => ['nullable', 'string', 'max:15', 'regex:/^\d{13}(\d{2})?$/'],
+            'legal_kpp' => ['nullable', 'string', 'max:9', 'regex:/^\d{9}$/'],
+            'legal_address' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -76,6 +81,9 @@ class UpdateSettingsRequest extends FormRequest
             'social_vk.url' => 'Укажите корректную ссылку на ВКонтакте.',
             'social_telegram.url' => 'Укажите корректную ссылку на Telegram.',
             'social_whatsapp.url' => 'Укажите корректную ссылку на WhatsApp.',
+            'legal_inn.regex' => 'ИНН должен содержать 10 или 12 цифр.',
+            'legal_ogrn.regex' => 'ОГРН должен содержать 13 цифр (ОГРНИП — 15 цифр).',
+            'legal_kpp.regex' => 'КПП должен содержать 9 цифр.',
         ];
     }
 }

@@ -1,6 +1,8 @@
 import { initFormControls } from 'gentelella/v4/form-controls';
+import { initAdminTabs } from './admin-tabs.js';
 
 initFormControls();
+initAdminTabs();
 
 document.querySelectorAll('.multi-select .ms-search').forEach((input) => {
     input.setAttribute('placeholder', 'Поиск категории...');

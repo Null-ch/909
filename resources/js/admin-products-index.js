@@ -11,6 +11,7 @@ if (table) {
             data: (params) => {
                 params.category_id = document.getElementById('filter-category')?.value || '';
                 params.status = document.getElementById('filter-status')?.value || '';
+                params.featured = document.getElementById('filter-featured')?.value || '';
                 params.price_min = document.getElementById('filter-price-min')?.value || '';
                 params.price_max = document.getElementById('filter-price-max')?.value || '';
             },
@@ -40,7 +41,7 @@ if (table) {
         },
     });
 
-    ['filter-category', 'filter-status', 'filter-price-min', 'filter-price-max'].forEach((id) => {
+    ['filter-category', 'filter-status', 'filter-featured', 'filter-price-min', 'filter-price-max'].forEach((id) => {
         document.getElementById(id)?.addEventListener('change', () => tableInstance.ajax.reload());
         document.getElementById(id)?.addEventListener('input', () => {
             if (id.startsWith('filter-price')) {

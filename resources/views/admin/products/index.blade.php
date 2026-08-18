@@ -49,6 +49,14 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label class="form-label" for="filter-featured">Хит продаж</label>
+                        <select id="filter-featured" class="form-control">
+                            <option value="">Все</option>
+                            <option value="hit">Хит</option>
+                            <option value="not_hit">Не хит</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label" for="filter-price-min">Цена от</label>
                         <input type="number" id="filter-price-min" class="form-control" min="0" step="0.01" placeholder="0">
                     </div>

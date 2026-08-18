@@ -30,6 +30,11 @@ class FrontLayoutComposer
             'defaultMetaTitle' => $this->settingService->get('seo_meta_title'),
             'defaultMetaDescription' => $this->settingService->get('seo_meta_description'),
             'defaultMetaKeywords' => $this->settingService->get('seo_meta_keywords'),
+            'legalName' => $this->settingService->get('legal_name'),
+            'legalInn' => $this->settingService->get('legal_inn'),
+            'legalOgrn' => $this->settingService->get('legal_ogrn'),
+            'legalKpp' => $this->settingService->get('legal_kpp'),
+            'legalAddress' => $this->settingService->get('legal_address'),
             'navCategories' => $this->categoryService->getNavigationTree(),
         ]);
     }

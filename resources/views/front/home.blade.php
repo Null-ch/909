@@ -119,9 +119,7 @@
                                         </div>
                                         <div class="home-categories__body">
                                             <h3 class="home-categories__title">{{ $category->name }}</h3>
-                                            @if($category->plainDescription())
-                                                <p class="home-categories__text">{{ Str::limit($category->plainDescription(), 90) }}</p>
-                                            @endif
+                                            <p class="home-categories__text">{{ Str::limit((string) $category->plainDescription(), 90) }}</p>
                                         </div>
                                     </a>
                                 </div>

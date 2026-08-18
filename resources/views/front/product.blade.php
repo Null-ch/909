@@ -62,13 +62,17 @@
                         </div>
 
                         <div class="product-page__price mb-4">
-                            <span class="product-page__price-current">
-                                {{ number_format($product->price, 0, ',', ' ') }} ₽
-                            </span>
-                            @if($product->old_price)
-                                <span class="product-page__price-old">
-                                    {{ number_format($product->old_price, 0, ',', ' ') }} ₽
+                            @if($product->hasPrice())
+                                <span class="product-page__price-current">
+                                    {{ number_format($product->price, 0, ',', ' ') }} ₽
                                 </span>
+                                @if($product->old_price)
+                                    <span class="product-page__price-old">
+                                        {{ number_format($product->old_price, 0, ',', ' ') }} ₽
+                                    </span>
+                                @endif
+                            @else
+                                <span class="product-page__price-inquiry">Стоимость уточняйте у менеджера</span>
                             @endif
                         </div>
 
@@ -93,12 +97,24 @@
                 </div>
             </div>
 
-            @if($product->attributes->isNotEmpty())
+            @if($product->attributes->isNotEmpty() || $product->color || $product->composition)
                 <section class="product-attributes mt-5">
                     <h2 class="h4 section-title mb-3">Характеристики</h2>
                     <div class="table-responsive">
                         <table class="table table-bordered product-attributes__table mb-0">
                             <tbody>
+                                @if($product->color)
+                                    <tr>
+                                        <th scope="row">Цвет</th>
+                                        <td>{{ $product->color }}</td>
+                                    </tr>
+                                @endif
+                                @if($product->composition)
+                                    <tr>
+                                        <th scope="row">Состав</th>
+                                        <td>{{ $product->composition }}</td>
+                                    </tr>
+                                @endif
                                 @foreach($product->attributes as $attribute)
                                     <tr>
                                         <th scope="row">{{ $attribute->attribute_name }}</th>

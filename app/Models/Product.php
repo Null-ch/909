@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'length',
     'width',
     'height',
+    'composition',
+    'color',
     'meta_title',
     'meta_description',
 ])]
@@ -64,6 +66,11 @@ class Product extends Model
     public function mainImage(): ?ProductImage
     {
         return $this->images->firstWhere('is_main', true) ?? $this->images->first();
+    }
+
+    public function hasPrice(): bool
+    {
+        return (float) $this->price > 0;
     }
 
     public function editorDescription(): string

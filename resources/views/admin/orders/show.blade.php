@@ -17,6 +17,61 @@
         </div>
     </div>
 
+    <div class="card" style="margin-top: var(--admin-gap, 24px);">
+        <div class="card-header">
+            <div class="card-title">Управление заказом</div>
+            <div class="card-subtitle">
+                Статус:
+                <span class="badge {{ $order->status->badgeClass() }}">{{ $order->status->label() }}</span>
+                · Оплата:
+                <span class="badge {{ $order->payment_status->badgeClass() }}">{{ $order->payment_status->label() }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ route('admin.orders.update', $order) }}" class="form-row" style="align-items:flex-end">
+                @csrf
+                @method('PUT')
+
+                <div class="form-group" style="flex:1">
+                    <label class="form-label" for="status">Статус заказа</label>
+                    <select id="status" name="status" class="form-control @error('status') is-invalid @enderror">
+                        @foreach (\App\Enums\OrderStatus::cases() as $status)
+                            <option value="{{ $status->value }}" @selected(old('status', $order->status->value) === $status->value)>
+                                {{ $status->label() }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('status')
+                        <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group" style="flex:1">
+                    <label class="form-label" for="payment_status">Статус оплаты</label>
+                    <select id="payment_status" name="payment_status" class="form-control @error('payment_status') is-invalid @enderror">
+                        @foreach (\App\Enums\PaymentStatus::cases() as $paymentStatus)
+                            <option value="{{ $paymentStatus->value }}" @selected(old('payment_status', $order->payment_status->value) === $paymentStatus->value)>
+                                {{ $paymentStatus->label() }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('payment_status')
+                        <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+            @if ($order->stock_deducted)
+                <div class="form-help" style="margin-top:12px">Остатки по этому заказу уже списаны.</div>
+            @elseif ($order->status === \App\Enums\OrderStatus::Delivered)
+                <div class="form-help" style="margin-top:12px">При статусе «Доставлен» остатки будут списаны автоматически.</div>
+            @endif
+        </div>
+    </div>
+
     <div class="row col-2">
         <div class="card">
             <div class="card-header">
@@ -122,61 +177,6 @@
                     </tfoot>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <div class="card" style="margin-top: var(--admin-gap, 24px);">
-        <div class="card-header">
-            <div class="card-title">Управление заказом</div>
-            <div class="card-subtitle">
-                Статус:
-                <span class="badge {{ $order->status->badgeClass() }}">{{ $order->status->label() }}</span>
-                · Оплата:
-                <span class="badge {{ $order->payment_status->badgeClass() }}">{{ $order->payment_status->label() }}</span>
-            </div>
-        </div>
-        <div class="card-body">
-            <form method="POST" action="{{ route('admin.orders.update', $order) }}" class="form-row" style="align-items:flex-end">
-                @csrf
-                @method('PUT')
-
-                <div class="form-group" style="flex:1">
-                    <label class="form-label" for="status">Статус заказа</label>
-                    <select id="status" name="status" class="form-control @error('status') is-invalid @enderror">
-                        @foreach (\App\Enums\OrderStatus::cases() as $status)
-                            <option value="{{ $status->value }}" @selected(old('status', $order->status->value) === $status->value)>
-                                {{ $status->label() }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('status')
-                        <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group" style="flex:1">
-                    <label class="form-label" for="payment_status">Статус оплаты</label>
-                    <select id="payment_status" name="payment_status" class="form-control @error('payment_status') is-invalid @enderror">
-                        @foreach (\App\Enums\PaymentStatus::cases() as $paymentStatus)
-                            <option value="{{ $paymentStatus->value }}" @selected(old('payment_status', $order->payment_status->value) === $paymentStatus->value)>
-                                {{ $paymentStatus->label() }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('payment_status')
-                        <div class="form-help" style="color: var(--danger);">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                </div>
-            </form>
-            @if ($order->stock_deducted)
-                <div class="form-help" style="margin-top:12px">Остатки по этому заказу уже списаны.</div>
-            @elseif ($order->status === \App\Enums\OrderStatus::Delivered)
-                <div class="form-help" style="margin-top:12px">При статусе «Доставлен» остатки будут списаны автоматически.</div>
-            @endif
         </div>
     </div>
 @endsection

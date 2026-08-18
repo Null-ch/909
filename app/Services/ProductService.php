@@ -31,6 +31,7 @@ class ProductService
         $search = trim((string) $request->input('search.value', ''));
         $categoryId = $request->input('category_id');
         $status = $request->input('status');
+        $featured = $request->input('featured');
         $priceMin = $request->input('price_min');
         $priceMax = $request->input('price_max');
 
@@ -46,6 +47,12 @@ class ProductService
             $query->where('is_active', true);
         } elseif ($status === 'inactive') {
             $query->where('is_active', false);
+        }
+
+        if ($featured === 'hit') {
+            $query->where('is_featured', true);
+        } elseif ($featured === 'not_hit') {
+            $query->where('is_featured', false);
         }
 
         if (is_numeric($priceMin)) {

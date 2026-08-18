@@ -23,13 +23,15 @@ class StoreProductRequest extends FormRequest
             'sku' => ['required', 'string', 'max:100', Rule::unique('products', 'sku')],
             'short_description' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string'],
-            'price' => ['required', 'numeric', 'min:0'],
+            'price' => ['nullable', 'numeric', 'min:0'],
             'old_price' => ['nullable', 'numeric', 'min:0'],
             'quantity' => ['required', 'integer', 'min:0'],
             'weight' => ['nullable', 'numeric', 'min:0'],
             'length' => ['nullable', 'numeric', 'min:0'],
             'width' => ['nullable', 'numeric', 'min:0'],
             'height' => ['nullable', 'numeric', 'min:0'],
+            'composition' => ['nullable', 'string', 'max:500'],
+            'color' => ['nullable', 'string', 'max:100'],
             'is_active' => ['sometimes', 'boolean'],
             'is_featured' => ['sometimes', 'boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
@@ -55,7 +57,6 @@ class StoreProductRequest extends FormRequest
             'sku.required' => 'Укажите артикул.',
             'sku.unique' => 'Такой артикул уже используется.',
             'slug.unique' => 'Такой URL (slug) уже используется.',
-            'price.required' => 'Укажите цену.',
             'quantity.required' => 'Укажите остаток на складе.',
         ];
     }
@@ -63,6 +64,7 @@ class StoreProductRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'price' => $this->input('price') === '' || $this->input('price') === null ? 0 : $this->input('price'),
             'is_active' => $this->boolean('is_active'),
             'is_featured' => $this->boolean('is_featured'),
             'category_ids' => array_values(array_filter($this->input('category_ids', []))),
