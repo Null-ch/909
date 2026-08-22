@@ -43,7 +43,10 @@
                 @endif
             </div>
 
-            <button type="button" wire:click="addToCart" class="btn btn-primary w-100">
+            <button type="button"
+                    wire:click="addToCart"
+                    class="btn btn-primary w-100 product-card__add-btn @unless($product->hasPrice()) invisible @endunless"
+                    @unless($product->hasPrice()) disabled tabindex="-1" aria-hidden="true" @endunless>
                 <i class="fa-solid fa-cart-plus me-1"></i>В корзину
             </button>
         </div>

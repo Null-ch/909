@@ -70,7 +70,8 @@ class ProductService
             $query->where(function ($q) use ($escaped) {
                 $q->where('name', 'like', "%{$escaped}%")
                     ->orWhere('sku', 'like', "%{$escaped}%")
-                    ->orWhere('slug', 'like', "%{$escaped}%");
+                    ->orWhere('slug', 'like', "%{$escaped}%")
+                    ->orWhere('id', 'like', "%{$escaped}%");
             });
         }
 

@@ -14,10 +14,64 @@ body.site-body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+    // Без этого не сжимающиеся дочерние элементы (например, ряд иконок в шапке)
+    // растягивают весь body шире вьюпорта на узких экранах.
+    > * {
+        min-width: 0;
+    }
 }
 
 .site-main {
     flex: 1 0 auto;
+}
+
+.site-mobile-contact {
+    position: fixed;
+    left: 5%;
+    bottom: 1rem;
+    width: 90%;
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    background: $primary;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+
+    &:hover {
+        background: #1B5E20;
+        color: #fff;
+    }
+}
+
+@media (max-width: 767.98px) {
+    body.site-body {
+        padding-bottom: 4.5rem;
+    }
+}
+
+// Плавное появление карточек при скролле
+.fade-in-init {
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.fade-in-init.fade-in-run {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-in-init {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 // Верхняя полоса
@@ -56,8 +110,14 @@ body.site-body {
 // Шапка
 .site-header {
     background: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: $box-shadow-sm;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+
+    .container > .d-flex {
+        min-height: 70px;
+    }
 }
 
 .site-logo {
@@ -65,15 +125,15 @@ body.site-body {
 }
 
 .site-logo__image {
-    max-height: 52px;
+    max-height: 44px;
     max-width: 100%;
     width: auto;
 }
 
 .site-logo__text {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: $secondary;
+    color: $primary;
     letter-spacing: -0.01em;
 }
 
@@ -184,6 +244,9 @@ body.site-body {
 // Навигация
 .site-nav {
     background: linear-gradient(90deg, $secondary, $primary);
+    position: sticky;
+    top: 70px;
+    z-index: 1020;
 }
 
 .site-nav__list {
@@ -211,6 +274,7 @@ body.site-body {
     color: rgba(255, 255, 255, 0.92);
     text-decoration: none;
     font-weight: 500;
+    line-height: 1;
     white-space: nowrap;
     border-radius: 999px;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -493,22 +557,15 @@ body.site-body {
 }
 
 .home-benefits__grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
 }
 
-.home-benefits__col {
-    flex: 0 1 240px;
-    max-width: 280px;
-    width: 100%;
-}
-
-@media (max-width: 575.98px) {
-    .home-benefits__col {
-        flex: 0 1 calc(50% - 0.75rem);
-        max-width: none;
+@media (max-width: 767.98px) {
+    .home-benefits__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
     }
 
     .home-hero__nav {
@@ -517,10 +574,33 @@ body.site-body {
     }
 }
 
+.home-benefits__col {
+    width: 100%;
+
+    // Доставка
+    &:nth-child(4n+1) .home-benefits__item {
+        background: #E3F2FD;
+    }
+
+    // Гарантия
+    &:nth-child(4n+2) .home-benefits__item {
+        background: #E8F5E9;
+    }
+
+    // Экологичность
+    &:nth-child(4n+3) .home-benefits__item {
+        background: #F1F8E9;
+    }
+
+    // Цены
+    &:nth-child(4n+4) .home-benefits__item {
+        background: #FFF3E0;
+    }
+}
+
 .home-benefits__item {
-    padding: 1.5rem 1rem;
+    padding: 1.75rem 1.25rem;
     border-radius: $border-radius-lg;
-    background: #fff;
     box-shadow: $box-shadow-sm;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
@@ -531,15 +611,20 @@ body.site-body {
 }
 
 .home-benefits__icon {
-    font-size: 2.25rem;
+    font-size: 3rem;
     color: $primary;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .home-benefits__title {
     font-size: 1rem;
     font-weight: 600;
     color: $secondary;
+}
+
+.home-benefits__text {
+    font-size: 0.875rem;
+    color: #555;
 }
 
 .home-categories__card {
@@ -680,11 +765,17 @@ body.site-body {
 }
 
 .product-card {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    > .card-body {
+        padding: 16px;
     }
 }
 
@@ -719,14 +810,16 @@ body.site-body {
 
 .product-card__badge {
     position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    background: #f5a623;
-    color: $secondary;
+    top: 0.9rem;
+    right: -0.5rem;
+    background: #D32F2F;
+    color: #fff;
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 0.25rem 0.6rem;
-    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    transform: rotate(-5deg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .product-card__title {
@@ -760,6 +853,17 @@ body.site-body {
     font-size: 0.95rem;
 }
 
+.product-card__add-btn {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+
+    &:hover,
+    &:focus {
+        background-color: #1B5E20;
+        border-color: #1B5E20;
+        transform: scale(1.02);
+    }
+}
+
 .product-card__price-inquiry {
     display: inline-block;
     font-size: 0.95rem;
@@ -767,13 +871,28 @@ body.site-body {
     color: $primary;
 }
 
+.home-seo {
+    text-align: center;
+}
+
 .home-seo__content {
+    max-width: 820px;
+    margin: 0 auto;
     color: #555;
-    line-height: 1.7;
+    line-height: 1.8;
 
     h2, h3 {
         color: $secondary;
+        text-align: center;
         margin-top: 1.5rem;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    p:first-child {
+        margin-top: 0;
     }
 }
 

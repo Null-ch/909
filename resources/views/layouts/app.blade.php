@@ -42,6 +42,17 @@
     @include('front.partials.footer')
     @include('front.partials.toasts')
 
+    @php
+        $mobileContactHref = $socialWhatsapp
+            ? (str_starts_with($socialWhatsapp, 'http') ? $socialWhatsapp : 'https://wa.me/'.preg_replace('/\D/', '', $socialWhatsapp))
+            : ($contactPhone ? 'tel:'.preg_replace('/[^\d+]/', '', $contactPhone) : null);
+    @endphp
+    @if($mobileContactHref)
+        <a href="{{ $mobileContactHref }}" class="site-mobile-contact d-md-none">
+            <i class="fa-solid fa-headset me-2"></i>Связаться с менеджером
+        </a>
+    @endif
+
     @livewireScripts
     @stack('scripts')
 </body>

@@ -7,6 +7,7 @@ use App\Repositories\ProductRepositoryInterface;
 use App\View\Composers\FrontLayoutComposer;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
@@ -27,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
         View::composer([
             'layouts.app',
             'front.*',

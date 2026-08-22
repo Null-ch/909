@@ -57,6 +57,10 @@ class CategoryService
         $orderColumn = (int) $request->input('order.0.column', 0);
         $orderDir = $request->input('order.0.dir', 'asc') === 'desc' ? 'desc' : 'asc';
 
+        $filterId = trim((string) $request->input('id', ''));
+        $filterName = trim((string) $request->input('name', ''));
+        $filterStatus = $request->input('status');
+
         $flat = $this->buildFlatTree(
             Category::query()
                 ->withCount('products')
@@ -66,6 +70,20 @@ class CategoryService
         );
 
         $recordsTotal = $flat->count();
+
+        if ($filterId !== '') {
+            $flat = $flat->filter(fn (array $row) => str_contains((string) $row['id'], $filterId))->values();
+        }
+
+        if ($filterName !== '') {
+            $flat = $flat->filter(fn (array $row) => str_contains(mb_strtolower($row['name_plain']), mb_strtolower($filterName)))->values();
+        }
+
+        if ($filterStatus === 'active') {
+            $flat = $flat->filter(fn (array $row) => $row['is_active_raw'])->values();
+        } elseif ($filterStatus === 'inactive') {
+            $flat = $flat->filter(fn (array $row) => ! $row['is_active_raw'])->values();
+        }
 
         if ($search !== '') {
             $flat = $flat->filter(function (array $row) use ($search) {
@@ -284,6 +302,7 @@ class CategoryService
                 'name_plain' => $category->name,
                 'name' => $nameHtml,
                 'is_active' => $statusHtml,
+                'is_active_raw' => $category->is_active,
                 'actions' => $actionsHtml,
             ]);
 

@@ -4,13 +4,18 @@ if (table) {
     const { default: DataTable } = await import('datatables.net');
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-    new DataTable(table, {
+    const tableInstance = new DataTable(table, {
         processing: true,
         serverSide: true,
         ajax: {
             url: table.dataset.ajaxUrl,
             type: 'GET',
             headers: csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {},
+            data: (params) => {
+                params.id = document.getElementById('filter-id')?.value || '';
+                params.name = document.getElementById('filter-name')?.value || '';
+                params.status = document.getElementById('filter-status')?.value || '';
+            },
         },
         pageLength: 10,
         lengthChange: true,
@@ -46,5 +51,15 @@ if (table) {
             processing: 'Загрузка…',
             paginate: { previous: '←', next: '→' },
         },
+    });
+
+    ['filter-id', 'filter-name', 'filter-status'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('change', () => tableInstance.ajax.reload());
+        document.getElementById(id)?.addEventListener('input', () => {
+            if (id !== 'filter-status') {
+                clearTimeout(window.categoryFilterTimer);
+                window.categoryFilterTimer = setTimeout(() => tableInstance.ajax.reload(), 400);
+            }
+        });
     });
 }
